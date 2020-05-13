@@ -98,7 +98,12 @@ struct ContentView: View {
         .onTapGesture {
         self.z1 = -1
         self.f1 = UnitPoint.trailing
-        withAnimation(.linear(duration: 4)) {
+        
+        self.f2 = UnitPoint.leading
+        self.q2.width = 128
+        self.z2 = 1
+        
+        withAnimation(.linear(duration: 0.5)) {
           self.p1 = 90
           self.p2 = 0
           self.q1.width = -128
@@ -110,7 +115,12 @@ struct ContentView: View {
       diceViews[midInt].onTapGesture {
         self.z2 = -1
         self.f2 = UnitPoint.trailing
-        withAnimation(.linear(duration: 4)) {
+        
+        self.f3 = UnitPoint.leading
+        self.q3.width = 128
+        self.z3 = 1
+        
+        withAnimation(.linear(duration: 0.5)) {
           self.p2 = 90
           self.p3 = 0
           self.q2.width = -128
@@ -119,25 +129,15 @@ struct ContentView: View {
       }.rotation3DEffect(.degrees(Double(p2)), axis: (x: 0, y: self.z2, z: 0), anchor: self.f2, anchorZ: 0.0, perspective: CGFloat(0.3))
         .offset(q2)
         
-//      diceViews[highInt].onTapGesture {
-//        self.f1 = UnitPoint.leading
-//        self.q1.width = 128
-//        self.z1 = 1
-//        self.z3 = -1
-//        self.f3 = UnitPoint.trailing
-//        withAnimation(.linear(duration: 4)) {
-//          self.p3 = 90
-//          self.q3.width = -128
-//          self.p1 = 0
-//          self.q1.width = 0
-//        }
-//      }.rotation3DEffect(.degrees(Double(p3)), axis: (x: 0, y: self.z3, z: 0), anchor: self.f3, anchorZ: 0.0, perspective: CGFloat(0.3))
-//        .offset(q3)
-        
       diceViews[highInt].onTapGesture {
         self.z3 = -1
         self.f3 = UnitPoint.trailing
-        withAnimation(.linear(duration: 4)) {
+        
+        self.f4 = UnitPoint.leading
+        self.q4.width = 128
+        self.z4 = 1
+        
+        withAnimation(.linear(duration: 0.5)) {
           self.p3 = 90
           self.q3.width = -128
           self.p4 = 0
@@ -154,7 +154,7 @@ struct ContentView: View {
         self.q1.width = 128
         self.z1 = 1
         
-        withAnimation(.linear(duration: 4)) {
+        withAnimation(.linear(duration: 0.5)) {
           self.p4 = 90
           self.q4.width = -128
           self.p1 = 0
