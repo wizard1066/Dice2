@@ -48,15 +48,17 @@ struct ContentView: View {
   @State var f4:UnitPoint = .leading
   var body: some View {
     VStack {
-      Text("Roll").onTapGesture {
-        withAnimation(.linear(duration: 8)) {
-//          self.p3 = 0
-//          self.q3.width = 0
-          self.z2 = -1
+      ZStack {
+        Rectangle()
+          .fill(LinearGradient(gradient: Gradient(colors: [.red, Color.init(0x8b0000)]), startPoint: .topTrailing, endPoint: .bottomLeading))
+          .frame(width: 128, height: 128, alignment: .center)
+        Circle()
+          .fill(LinearGradient(gradient: Gradient(colors: [Color.init(0x8b0000), .red]), startPoint: .topTrailing, endPoint: .bottomLeading))
+          .frame(width: 120, height: 120, alignment: .center)
+        Circle()
+          .fill(Color.white)
+          .frame(width: 28, height: 28, alignment: .center)
         }
-      }
-        
-          
           
 //        if self.p2 == 90 {
 //          withAnimation {
@@ -109,7 +111,7 @@ struct ContentView: View {
           self.q1.width = -128
           self.q2.width = 0
         }
-      }.rotation3DEffect(.degrees(Double(p1)), axis: (x: 0, y: self.z1, z: 0), anchor: self.f1, anchorZ: 0.0, perspective: CGFloat(0.3))
+      }.rotation3DEffect(.degrees(Double(p1)), axis: (x: 0, y: self.z1, z: 0), anchor: self.f1, anchorZ: 0.0, perspective: CGFloat(0.5))
       .offset(q1)
 
       diceViews[midInt].onTapGesture {
@@ -126,7 +128,7 @@ struct ContentView: View {
           self.q2.width = -128
           self.q3.width = 0
         }
-      }.rotation3DEffect(.degrees(Double(p2)), axis: (x: 0, y: self.z2, z: 0), anchor: self.f2, anchorZ: 0.0, perspective: CGFloat(0.3))
+      }.rotation3DEffect(.degrees(Double(p2)), axis: (x: 0, y: self.z2, z: 0), anchor: self.f2, anchorZ: 0.0, perspective: CGFloat(0.5))
         .offset(q2)
         
       diceViews[highInt].onTapGesture {
@@ -143,7 +145,7 @@ struct ContentView: View {
           self.p4 = 0
           self.q4.width = 0
         }
-      }.rotation3DEffect(.degrees(Double(p3)), axis: (x: 0, y: self.z3, z: 0), anchor: self.f3, anchorZ: 0.0, perspective: CGFloat(0.3))
+      }.rotation3DEffect(.degrees(Double(p3)), axis: (x: 0, y: self.z3, z: 0), anchor: self.f3, anchorZ: 0.0, perspective: CGFloat(0.5))
         .offset(q3)
         
       diceViews[ultraInt].onTapGesture {
@@ -160,7 +162,7 @@ struct ContentView: View {
           self.p1 = 0
           self.q1.width = 0
         }
-      }.rotation3DEffect(.degrees(Double(p4)), axis: (x: 0, y: self.z4, z: 0), anchor: self.f4, anchorZ: 0.0, perspective: CGFloat(0.3))
+      }.rotation3DEffect(.degrees(Double(p4)), axis: (x: 0, y: self.z4, z: 0), anchor: self.f4, anchorZ: 0.0, perspective: CGFloat(0.5))
         .offset(q4)
         
         
@@ -399,103 +401,12 @@ struct sixDotDice: View {
 //  }
 //}
 
-struct changeDice: ViewModifier {
-  @Binding var showInt:Int
-  func body(content: Content) -> some View {
-    content
-      .onTapGesture {
-        withAnimation(.linear(duration: 8)) {
-          self.showInt = d6.nextInt()
-        }
-        print("Int ",self.showInt)
-    }
-  }
+
+extension Color {
+init(_ hex: Int, opacity: Double = 1.0) {
+    let red = Double((hex & 0xff0000) >> 16) / 255.0
+    let green = Double((hex & 0xff00) >> 8) / 255.0
+    let blue = Double((hex & 0xff) >> 0) / 255.0
+    self.init(.sRGB, red: red, green: green, blue: blue, opacity: opacity)
 }
-
-
-struct ContentView_Previews: PreviewProvider {
-  
-  static var previews: some View {
-    
-    ContentView()
-    
-  }
-  
-}
-
-struct RectangularShape: Shape {
-    var pct: CGFloat
-    
-    var animatableData: CGFloat {
-        get { pct }
-        set { pct = newValue }
-    }
-    
-    func path(in rect: CGRect) -> Path {
-        var path = Path()
-        
-//        path.addRect(rect.insetBy(dx: pct * rect.width / 1.0, dy: pct * rect.height / 1.0))
-//        path.addRect(rect.insetBy(dx: pct * rect.width / 1.0, dy:0 ))
-        
-        path.move(to: CGPoint(x: 0,y: 0))
-        path.addLine(to: CGPoint(x: 20,y: 44))
-        path.addLine(to: CGPoint(x: 40,y: 0))
-        path.addLine(to: CGPoint(x: 0,y: 0))
-
-        return path
-    }
-}
-
-extension AnyTransition {
-    static var rectangular: AnyTransition { get {
-        AnyTransition.modifier(
-            active: ShapeClipModifier(shape: RectangularShape(pct: 0)),
-            identity: ShapeClipModifier(shape: RectangularShape(pct: 1)))
-        }
-    }
-}
-
-struct ShapeClipModifier<S: Shape>: ViewModifier {
-    let shape: S
-    
-    func body(content: Content) -> some View {
-        content.clipShape(shape)
-    }
-}
-
-extension AnyTransition {
-    static var fly: AnyTransition { get {
-          AnyTransition.modifier(active: FlyTransition(pct: 0), identity: FlyTransition(pct: 1))
-        }
-    }
-}
-
-struct FlyTransition: GeometryEffect {
-    var pct: Double
-    
-    var animatableData: Double {
-        get { pct }
-        set { pct = newValue }
-    }
-    
-    func effectValue(size: CGSize) -> ProjectionTransform {
-
-        let rotationPercent = pct
-        let a = CGFloat(Angle(degrees: 90 * (1-rotationPercent)).radians)
-        
-        var transform3d = CATransform3DIdentity;
-        transform3d.m34 = -1/max(size.width, size.height)
-        
-        transform3d = CATransform3DRotate(transform3d, a, 1, 0, 0)
-        transform3d = CATransform3DTranslate(transform3d, -size.width/2.0, -size.height/2.0, 0)
-        
-        let affineTransform1 = ProjectionTransform(CGAffineTransform(translationX: size.width/2.0, y: size.height / 2.0))
-        let affineTransform2 = ProjectionTransform(CGAffineTransform(scaleX: CGFloat(pct * 2), y: CGFloat(pct * 2)))
-        
-        if pct <= 0.5 {
-            return ProjectionTransform(transform3d).concatenating(affineTransform2).concatenating(affineTransform1)
-        } else {
-            return ProjectionTransform(transform3d).concatenating(affineTransform1)
-        }
-    }
 }
