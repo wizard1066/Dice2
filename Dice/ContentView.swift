@@ -135,10 +135,7 @@ struct ContentView: View {
       
       ZStack {
         diceViews[lowInt]
-          .onTapGesture {
-            // p1 = 0
-            
-        }.rotation3DEffect(.degrees(Double(p1)), axis: (x: 0, y: self.z1, z: 0), anchor: self.f1, anchorZ: 0.0, perspective: CGFloat(0.5))
+          .rotation3DEffect(.degrees(Double(p1)), axis: (x: 0, y: self.z1, z: 0), anchor: self.f1, anchorZ: 0.0, perspective: CGFloat(0.5))
           .offset(q1)
           .gesture(DragGesture()
             .onEnded { value in
@@ -174,9 +171,8 @@ struct ContentView: View {
         )
         
         
-        diceViews[midInt].onTapGesture {
-          
-        }.rotation3DEffect(.degrees(Double(p2)), axis: (x: 0, y: self.z2, z: 0), anchor: self.f2, anchorZ: 0.0, perspective: CGFloat(0.5))
+        diceViews[midInt]
+          .rotation3DEffect(.degrees(Double(p2)), axis: (x: 0, y: self.z2, z: 0), anchor: self.f2, anchorZ: 0.0, perspective: CGFloat(0.5))
           .offset(q2)
           .gesture(DragGesture()
             .onEnded { value in
@@ -212,9 +208,8 @@ struct ContentView: View {
             }
         )
         
-        diceViews[highInt].onTapGesture {
-          
-        }.rotation3DEffect(.degrees(Double(p3)), axis: (x: 0, y: self.z3, z: 0), anchor: self.f3, anchorZ: 0.0, perspective: CGFloat(0.5))
+        diceViews[highInt]
+          .rotation3DEffect(.degrees(Double(p3)), axis: (x: 0, y: self.z3, z: 0), anchor: self.f3, anchorZ: 0.0, perspective: CGFloat(0.5))
           .offset(q3)
           .gesture(DragGesture()
             .onEnded { value in
@@ -249,9 +244,8 @@ struct ContentView: View {
             }
         )
         
-        diceViews[ultraInt].onTapGesture {
-          
-        }.rotation3DEffect(.degrees(Double(p4)), axis: (x: 0, y: self.z4, z: 0), anchor: self.f4, anchorZ: 0.0, perspective: CGFloat(0.5))
+        diceViews[ultraInt]
+          .rotation3DEffect(.degrees(Double(p4)), axis: (x: 0, y: self.z4, z: 0), anchor: self.f4, anchorZ: 0.0, perspective: CGFloat(0.5))
           .offset(q4)
           .gesture(DragGesture()
             .onEnded { value in
