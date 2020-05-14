@@ -32,35 +32,74 @@ let fieldSide:CGFloat = 32
 
 let d6 = GKRandomDistribution.d6()
 
-var diceViews:[AnyView] = [AnyView(oneDotDice()),AnyView(twoDotDice()),AnyView(threeDotDice(turn: true)),AnyView(fourDotDice())]
+var diceViews:[AnyView] = [AnyView(oneDotDice()),AnyView(twoDotDice()),AnyView(threeDotDice(turn: true)),AnyView(fourDotDice()),AnyView(fiveDotDice()),AnyView(sixDotDice())]
 
 struct ContentView: View {
-  @State var showView = true
+//  @State var showView = true
+  enum SwipeHVDirection: String {
+        case left, right, up, down, none
+  }
+  
   @State var degree:Double = 0
   @State var mover = CGSize(width:0, height:0)
   @State var swinger:UnitPoint = .trailing
-  @State var wildcard:CGFloat = 0
   @State var action:CGFloat = -1
+  
   @State var lowInt:Int = 0
   @State var midInt:Int = 1
   @State var highInt:Int = 2
   @State var ultraInt:Int = 3
+  @State var topInt: Int = 4
+  @State var botInt: Int = 5
   @State var q1 = CGSize(width: 0, height: 0)
   @State var q2 = CGSize(width: 128, height: 0)
   @State var q3 = CGSize(width: 128, height: 0)
   @State var q4 = CGSize(width: 128, height: 0)
+  @State var q5 = CGSize(width: 128, height: 0)
+  @State var q6 = CGSize(width: 128, height: 0)
   @State var p1 = 0
   @State var p2 = 90
   @State var p3 = 90
   @State var p4 = 90
+  @State var p5 = 90
+  @State var p6 = 90
   @State var z1:CGFloat = 1
   @State var z2:CGFloat = 1
   @State var z3:CGFloat = 1
   @State var z4:CGFloat = 1
+  @State var z5:CGFloat = 1
+  @State var z6:CGFloat = 1
+  @State var x1:CGFloat = 0
+  @State var x2:CGFloat = 0
+  @State var x3:CGFloat = 0
+  @State var x4:CGFloat = 0
+  @State var x5:CGFloat = 0
+  @State var x6:CGFloat = 0
   @State var f1:UnitPoint = .leading
   @State var f2:UnitPoint = .leading
   @State var f3:UnitPoint = .leading
   @State var f4:UnitPoint = .leading
+  @State var f5:UnitPoint = .leading
+  @State var f6:UnitPoint = .leading
+  
+//  @State var swipeDirection: SwipeHVDirection = .none { didSet { print(swipeDirection) } }
+  
+  func detectDirection(value: DragGesture.Value) -> SwipeHVDirection {
+    if value.startLocation.x < value.location.x - 24 {
+                return .left
+              }
+              if value.startLocation.x > value.location.x + 24 {
+                return .right
+              }
+              if value.startLocation.y < value.location.y - 24 {
+                return .down
+              }
+              if value.startLocation.y > value.location.y + 24 {
+                return .up
+              }
+      return .none
+  }
+
   var body: some View {
     VStack {
       ZStack {
@@ -81,16 +120,7 @@ struct ContentView: View {
         Circle()
           .stroke(Color.black)
           .frame(width: 28, height: 28, alignment: .center)
-        
-        //        VStack {
-        //          Text("Better")
-        //            .foregroundColor(Color.white)
-        //            .font(Fonts.avenirNextCondensedBold(size: 16))
-        //          Text("Programming")
-        //            .foregroundColor(Color.white)
-        //            .font(Fonts.avenirNextCondensedBold(size: 16))
-        //        }
-      }.rotation3DEffect(.degrees(degree), axis: (x: 0, y: action, z: 0), anchor: swinger, anchorZ: wildcard, perspective: 0.2)
+      }.rotation3DEffect(.degrees(degree), axis: (x: 0, y: action, z: 0), anchor: swinger, anchorZ: 0, perspective: 0.2)
         .onTapGesture {
           self.swinger = UnitPoint.trailing
           self.action = -1
@@ -134,12 +164,31 @@ struct ContentView: View {
       
       
       ZStack {
+        diceViews[topInt]
+          .rotation3DEffect(.degrees(Double(p5)), axis: (x: self.x5, y: self.z5, z: 0), anchor: self.f5, anchorZ: 0.0, perspective: CGFloat(0.5))
+          .offset(q5)
+        
         diceViews[lowInt]
-          .rotation3DEffect(.degrees(Double(p1)), axis: (x: 0, y: self.z1, z: 0), anchor: self.f1, anchorZ: 0.0, perspective: CGFloat(0.5))
+          .rotation3DEffect(.degrees(Double(p1)), axis: (x: self.x1, y: self.z1, z: 0), anchor: self.f1, anchorZ: 0.0, perspective: CGFloat(0.5))
           .offset(q1)
           .gesture(DragGesture()
             .onEnded { value in
-              if value.translation.width > 30 {
+              let direction = self.detectDirection(value: value)
+              if direction == .down {
+                self.z1 = 0
+                self.x1 = -1
+                self.f1 = UnitPoint.trailing
+                self.f5 = UnitPoint.leading
+                self.x5 = 1
+                
+                withAnimation(.linear(duration: 2)) {
+                  self.p1 = 90
+                  self.q1.height = 128
+                  self.p5 = 0
+                  self.q5.height = 0
+                }
+              }
+              if direction == .left {
                 self.z1 = 1
                 self.z4 = -1
                 self.f1 = UnitPoint.leading
@@ -153,7 +202,7 @@ struct ContentView: View {
                   self.q4.width = 0
                 }
               }
-              if value.translation.width < 30 {
+              if direction == .right  {
                 self.z1 = -1
                 self.z2 = 1
                 self.f1 = UnitPoint.trailing
