@@ -32,12 +32,21 @@ let fieldSide:CGFloat = 32
 
 let d6 = GKRandomDistribution.d6()
 
-var diceViews:[AnyView] = [AnyView(oneDotDice()),AnyView(twoDotDice()),AnyView(threeDotDice(turn: true)),AnyView(fourDotDice()),AnyView(fiveDotDice()),AnyView(sixDotDice())]
+var diceViews:[AnyView] = [AnyView(oneDotDice()),AnyView(twoDotDice()),AnyView(threeDotDice()),AnyView(fourDotDice()),AnyView(fiveDotDice()),AnyView(sixDotDice())]
 
 struct ContentView: View {
 //  @State var showView = true
   enum SwipeHVDirection: String {
         case left, right, up, down, none
+  }
+  
+  enum DiceSides: Int {
+    case one = 0
+    case two
+    case three
+    case four
+    case five
+    case six
   }
   
   @State var degree:Double = 0
@@ -55,32 +64,32 @@ struct ContentView: View {
   @State var q2 = CGSize(width: 128, height: 0)
   @State var q3 = CGSize(width: 128, height: 0)
   @State var q4 = CGSize(width: 128, height: 0)
-  @State var q5 = CGSize(width: 128, height: 0)
-  @State var q6 = CGSize(width: 128, height: 0)
+  @State var q5 = CGSize(width: 0, height: 0)
+  @State var q6 = CGSize(width: 0, height: 0)
   @State var p1 = 0
   @State var p2 = 90
   @State var p3 = 90
   @State var p4 = 90
   @State var p5 = 90
   @State var p6 = 90
-  @State var z1:CGFloat = 1
-  @State var z2:CGFloat = 1
-  @State var z3:CGFloat = 1
-  @State var z4:CGFloat = 1
-  @State var z5:CGFloat = 1
-  @State var z6:CGFloat = 1
-  @State var x1:CGFloat = 0
+  @State var y1:CGFloat = 1
+  @State var y2:CGFloat = 1
+  @State var y3:CGFloat = 1
+  @State var y4:CGFloat = 1
+  @State var y5:CGFloat = 0
+  @State var y6:CGFloat = 0
+  @State var x1:CGFloat = -1
   @State var x2:CGFloat = 0
   @State var x3:CGFloat = 0
   @State var x4:CGFloat = 0
-  @State var x5:CGFloat = 0
-  @State var x6:CGFloat = 0
+  @State var x5:CGFloat = 90
+  @State var x6:CGFloat = 90
   @State var f1:UnitPoint = .leading
   @State var f2:UnitPoint = .leading
   @State var f3:UnitPoint = .leading
   @State var f4:UnitPoint = .leading
-  @State var f5:UnitPoint = .leading
-  @State var f6:UnitPoint = .leading
+  @State var f5:UnitPoint = .top
+  @State var f6:UnitPoint = .top
   
 //  @State var swipeDirection: SwipeHVDirection = .none { didSet { print(swipeDirection) } }
   
@@ -101,7 +110,90 @@ struct ContentView: View {
   }
 
   var body: some View {
-    VStack {
+    func sourceFace(direct: SwipeHVDirection) -> (Int,Int,CGFloat,CGFloat,UnitPoint,CGFloat,CGFloat,CGFloat,CGFloat) {
+      var sourceDegree:Int = 0
+      var targetDegree:Int = 0
+      var xAxis:CGFloat = 0
+      var yAxis:CGFloat = 0
+      var anchorPoint:UnitPoint!
+      var targetHeight:CGFloat = 0
+      var targetWidth:CGFloat = 0
+      var sourceHeight:CGFloat = 0
+      var sourceWidth:CGFloat = 0
+      
+      switch direct {
+        case .up:
+          anchorPoint = UnitPoint.top
+          sourceDegree = 0
+          targetDegree = 90
+          sourceHeight = 128
+          targetHeight = 0
+          //                self.f1 = UnitPoint.top
+//                self.z1 = 0
+//                self.p1 = 90
+//                self.q1.height = 128
+//
+//                withAnimation(.linear(duration: 0.5)) {
+//
+//                  self.q1.height = 0
+//                  self.p1 = 0
+        case .down:
+          break
+        case .left:
+          break
+        default:
+          // right
+          break
+      }
+      return (sourceDegree,targetDegree,xAxis,yAxis,anchorPoint,targetWidth,targetHeight,sourceWidth,sourceHeight)
+    }
+    func targetFace(direct: SwipeHVDirection) -> (Int,CGFloat,CGFloat,UnitPoint,CGFloat,CGFloat,CGFloat,CGFloat) {
+//      .rotation3DEffect(.degrees(Double(p5)), axis: (x: self.x5, y:self.z5 , z: 0), anchor: self.f5, anchorZ: 0.0, perspective: CGFloat(0.5))
+      var degree:Int = 0
+      var xAxis:CGFloat = 0
+      var yAxis:CGFloat = 0
+      var anchorPoint:UnitPoint!
+      var offsetHeight:CGFloat = 0
+      var offsetWidth:CGFloat = 0
+      var sourceHeight:CGFloat = 0
+      var sourceWidth:CGFloat = 0
+      
+      switch direct {
+        case .up:
+          xAxis = 1
+          yAxis = 0
+          anchorPoint = UnitPoint.bottom
+          degree = 90
+          offsetHeight = -128
+          offsetWidth = 0
+          
+//                self.x5 = 1
+//                self.f5 = UnitPoint.bottom
+//
+//                self.f1 = UnitPoint.top
+//                self.z1 = 0
+//                self.p1 = 90
+//                self.q1.height = 128
+//
+//                withAnimation(.linear(duration: 0.5)) {
+//                  self.p5 = 90
+//                  self.q5.height = -128
+//
+//                  self.q1.height = 0
+//                  self.p1 = 0
+      case .left:
+        break
+      case .right:
+        break
+      case .down:
+        break
+      case .none:
+        break
+      }
+      return (degree,xAxis,yAxis,anchorPoint,offsetWidth,offsetHeight,sourceWidth,sourceHeight)
+    }
+    return VStack {
+      diceViews[DiceSides.six.rawValue]
       ZStack {
         Rectangle()
           //          .fill(LinearGradient(gradient: Gradient(colors: [.red, Color.init(0x8b0000)]), startPoint: .leading, endPoint: .trailing))
@@ -164,33 +256,132 @@ struct ContentView: View {
       
       
       ZStack {
+        diceViews[botInt]
+          .rotation3DEffect(.degrees(Double(p6)), axis: (x: self.x6, y:self.y6 , z: 0), anchor: self.f6, anchorZ: 0.0, perspective: CGFloat(0.5))
+          .offset(q6)
+          .gesture(DragGesture()
+            .onEnded { value in
+              let direction = self.detectDirection(value: value)
+              if direction == .up {
+                
+              }
+              if direction == .down {
+                self.y6 = 0
+                self.x6 = -1
+                self.f6 = UnitPoint.top
+                
+                self.f1 = UnitPoint.bottom
+                self.x1 = 1
+                self.y1 = 0
+                self.p1 = 90
+                self.q1.height = -128
+                
+                withAnimation(.linear(duration: 0.5)) {
+                  self.p6 = 90
+                  self.q6.height = 128
+                  
+                  self.q1.height = 0
+                  self.p1 = 0
+                }
+              }})
+          
+        // five
         diceViews[topInt]
-          .rotation3DEffect(.degrees(Double(p5)), axis: (x: self.x5, y: self.z5, z: 0), anchor: self.f5, anchorZ: 0.0, perspective: CGFloat(0.5))
+          .rotation3DEffect(.degrees(Double(p5)), axis: (x: self.x5, y:self.y5 , z: 0), anchor: self.f5, anchorZ: 0.0, perspective: CGFloat(0.5))
           .offset(q5)
+          .gesture(DragGesture()
+            .onEnded { value in
+              let direction = self.detectDirection(value: value)
+              if direction == .up {
+              
+                self.x5 = 1
+                self.f5 = UnitPoint.bottom
+                
+                self.f1 = UnitPoint.top
+                self.y1 = 0
+                self.p1 = 90
+                self.q1.height = 128
+                
+                withAnimation(.linear(duration: 0.5)) {
+                  self.p5 = 90
+                  self.q5.height = -128
+                   
+                  self.q1.height = 0
+                  self.p1 = 0
+                }
+              }
+              if direction == .down {
+                self.y1 = 0
+                self.x1 = -1
+                self.f1 = UnitPoint.top
+                
+                self.f5 = UnitPoint.bottom
+                self.x5 = 1
+                self.y5 = 0
+                self.p5 = 90
+                self.q5.height = -128
+                
+                withAnimation(.linear(duration: 0.5)) {
+                  self.p1 = 90
+                  self.q1.height = 128
+                  
+                  self.q5.height = 0
+                  self.p5 = 0
+                }
+              }
+            }
+          )
         
         diceViews[lowInt]
-          .rotation3DEffect(.degrees(Double(p1)), axis: (x: self.x1, y: self.z1, z: 0), anchor: self.f1, anchorZ: 0.0, perspective: CGFloat(0.5))
+        // dice face 1
+          .rotation3DEffect(.degrees(Double(p1)), axis: (x: self.x1, y: self.y1, z: 0), anchor: self.f1, anchorZ: 0.0, perspective: CGFloat(0.5))
           .offset(q1)
           .gesture(DragGesture()
             .onEnded { value in
               let direction = self.detectDirection(value: value)
-              if direction == .down {
-                self.z1 = 0
-                self.x1 = -1
-                self.f1 = UnitPoint.trailing
-                self.f5 = UnitPoint.leading
-                self.x5 = 1
+              if direction == .up {
+                self.x1 = 1
+                self.f1 = UnitPoint.bottom
                 
-                withAnimation(.linear(duration: 2)) {
+                self.f6 = UnitPoint.top
+                self.y6 = 0
+                self.y1 = 0
+                self.x6 = -1
+                self.p6 = 90
+                self.q6.height = 128
+                
+                withAnimation(.linear(duration: 0.5)) {
+                  self.p1 = 90
+                  self.q1.height = -128
+                   
+                  self.q6.height = 0
+                  self.p6 = 0
+                }
+              }
+              if direction == .down {
+                self.y1 = 0
+                self.x1 = -1
+                self.f1 = UnitPoint.top
+                
+                self.f5 = UnitPoint.bottom
+                self.x5 = 1
+                self.y5 = 0
+                self.p5 = 90
+                self.q5.height = -128
+                
+                withAnimation(.linear(duration: 0.5)) {
                   self.p1 = 90
                   self.q1.height = 128
-                  self.p5 = 0
+                  
                   self.q5.height = 0
+                  self.p5 = 0
+                  
                 }
               }
               if direction == .left {
-                self.z1 = 1
-                self.z4 = -1
+                self.x1 = 0
+                self.y1 = 1
+                self.y4 = -1
                 self.f1 = UnitPoint.leading
                 self.f4 = UnitPoint.trailing
                 self.q4.width = -128
@@ -203,8 +394,9 @@ struct ContentView: View {
                 }
               }
               if direction == .right  {
-                self.z1 = -1
-                self.z2 = 1
+                self.x1 = 0
+                self.y1 = -1
+                self.y2 = 1
                 self.f1 = UnitPoint.trailing
                 self.f2 = UnitPoint.leading
                 self.q2.width = 128
@@ -221,13 +413,13 @@ struct ContentView: View {
         
         
         diceViews[midInt]
-          .rotation3DEffect(.degrees(Double(p2)), axis: (x: 0, y: self.z2, z: 0), anchor: self.f2, anchorZ: 0.0, perspective: CGFloat(0.5))
+          .rotation3DEffect(.degrees(Double(p2)), axis: (x: 0, y: self.y2, z: 0), anchor: self.f2, anchorZ: 0.0, perspective: CGFloat(0.5))
           .offset(q2)
           .gesture(DragGesture()
             .onEnded { value in
               if value.translation.width > 30 {
-                self.z2 = 1
-                self.z1 = -1
+                self.y2 = 1
+                self.y1 = -1
                 self.f2 = UnitPoint.leading
                 self.f1 = UnitPoint.trailing
                 self.q1.width = -128
@@ -241,8 +433,8 @@ struct ContentView: View {
                 }
               }
               if value.translation.width < 30 {
-                self.z2 = -1
-                self.z3 = 1
+                self.y2 = -1
+                self.y3 = 1
                 self.f2 = UnitPoint.trailing
                 self.f3 = UnitPoint.leading
                 self.q3.width = 128
@@ -258,13 +450,13 @@ struct ContentView: View {
         )
         
         diceViews[highInt]
-          .rotation3DEffect(.degrees(Double(p3)), axis: (x: 0, y: self.z3, z: 0), anchor: self.f3, anchorZ: 0.0, perspective: CGFloat(0.5))
+          .rotation3DEffect(.degrees(Double(p3)), axis: (x: 0, y: self.y3, z: 0), anchor: self.f3, anchorZ: 0.0, perspective: CGFloat(0.5))
           .offset(q3)
           .gesture(DragGesture()
             .onEnded { value in
               if value.translation.width > 30 {
-                self.z3 = 1
-                self.z2 = -1
+                self.y3 = 1
+                self.y2 = -1
                 self.f3 = UnitPoint.leading
                 self.f2 = UnitPoint.trailing
                 self.q2.width = -128
@@ -277,8 +469,8 @@ struct ContentView: View {
                 }
               }
               if value.translation.width < 30 {
-                self.z3 = -1
-                self.z4 = 1
+                self.y3 = -1
+                self.y4 = 1
                 self.f3 = UnitPoint.trailing
                 self.f4 = UnitPoint.leading
                 self.q4.width = 128
@@ -294,13 +486,13 @@ struct ContentView: View {
         )
         
         diceViews[ultraInt]
-          .rotation3DEffect(.degrees(Double(p4)), axis: (x: 0, y: self.z4, z: 0), anchor: self.f4, anchorZ: 0.0, perspective: CGFloat(0.5))
+          .rotation3DEffect(.degrees(Double(p4)), axis: (x: 0, y: self.y4, z: 0), anchor: self.f4, anchorZ: 0.0, perspective: CGFloat(0.5))
           .offset(q4)
           .gesture(DragGesture()
             .onEnded { value in
               if value.translation.width > 30 {
-                self.z4 = 1
-                self.z3 = -1
+                self.y4 = 1
+                self.y3 = -1
                 self.f4 = UnitPoint.leading
                 self.f3 = UnitPoint.trailing
                 self.q3.width = -128
@@ -314,8 +506,8 @@ struct ContentView: View {
                 }
               }
               if value.translation.width < 30 {
-                self.z4 = -1
-                self.z1 = 1
+                self.y4 = -1
+                self.y1 = 1
                 self.f4 = UnitPoint.trailing
                 self.f1 = UnitPoint.leading
                 self.q1.width = 128
@@ -488,7 +680,6 @@ struct twoDotDice: View {
 }
 
 struct threeDotDice: View {
-  @State var turn:Bool
   var body: some View {
     ZStack {
       Rectangle()
@@ -498,22 +689,44 @@ struct threeDotDice: View {
       Circle()
         .fill(LinearGradient(gradient: Gradient(colors: [Color.init(0x8b0000), .red]), startPoint: .topTrailing, endPoint: .bottomLeading))
         .frame(width: 120, height: 120, alignment: .center)
-      HStack {
-        Spacer()
-        Circle()
-          .fill(Color.white)
-          .frame(width: dotSize, height: dotSize, alignment: .center)
-        Spacer()
-        Circle()
-          .fill(Color.white)
-          .frame(width: dotSize, height: dotSize, alignment: .center)
-        Spacer()
-        Circle()
-          .fill(Color.white)
-          .frame(width: dotSize, height: dotSize, alignment: .center)
-        Spacer()
-      }.frame(width: diceSize, height: diceSize, alignment: .center)
-        .rotationEffect(turn ? .degrees(45) : .degrees(0))
+//      HStack {
+////        Spacer()
+////        Circle()
+////          .fill(Color.white)
+////          .frame(width: dotSize, height: dotSize, alignment: .center)
+////        Spacer()
+////        Circle()
+////          .fill(Color.white)
+////          .frame(width: dotSize, height: dotSize, alignment: .center)
+////        Spacer()
+////        Circle()
+////          .fill(Color.white)
+////          .frame(width: dotSize, height: dotSize, alignment: .center)
+////        Spacer()
+//      }.
+      threeDotAux()
+        .frame(width: diceSize, height: diceSize, alignment: .center)
+        .rotationEffect(.degrees(45))
+    }
+  }
+}
+
+struct threeDotAux: View {
+  var body: some View {
+    HStack {
+      Spacer()
+      Circle()
+        .fill(Color.white)
+        .frame(width: dotSize, height: dotSize, alignment: .center)
+      Spacer()
+      Circle()
+        .fill(Color.white)
+        .frame(width: dotSize, height: dotSize, alignment: .center)
+      Spacer()
+      Circle()
+        .fill(Color.white)
+        .frame(width: dotSize, height: dotSize, alignment: .center)
+      Spacer()
     }
   }
 }
@@ -568,30 +781,68 @@ struct fourDotDice: View {
 
 struct fiveDotDice: View {
   var body: some View {
-    ZStack {
-      fourDotDice()
-      oneDotDice()
+       ZStack {
+      Rectangle()
+        .fill(LinearGradient(gradient: Gradient(colors: [.blue, Color.init(0x8b0000)]), startPoint: .topTrailing, endPoint: .bottomLeading))
+        .frame(width: diceSize, height: diceSize, alignment: .center)
+      //      .border(Color.black)
+      Circle()
+        .fill(LinearGradient(gradient: Gradient(colors: [Color.init(0x8b0000), .blue]), startPoint: .topTrailing, endPoint: .bottomLeading))
+        .frame(width: 120, height: 120, alignment: .center)
+      VStack {
+        HStack {
+          Spacer()
+            .frame(width: fieldSide )
+          Circle()
+            .fill(Color.white)
+            .frame(width: dotSize, height: dotSize, alignment: .center)
+          Spacer()
+            .frame(width: fieldSide )
+          Circle()
+            .fill(Color.white)
+            .frame(width: dotSize, height: dotSize, alignment: .center)
+          Spacer()
+            .frame(width: fieldSide)
+        } // HStack
+        
+        Spacer()
+          .frame(height: fieldSide )
+        HStack {
+          Spacer()
+            .frame(width: fieldSide)
+          Circle()
+            .fill(Color.white)
+            .frame(width: dotSize, height: dotSize, alignment: .center)
+          Spacer()
+            .frame(width: fieldSide )
+          Circle()
+            .fill(Color.white)
+            .frame(width: dotSize, height: dotSize, alignment: .center)
+          Spacer()
+            .frame(width: fieldSide)
+        } // HStack
+      }.frame(width: diceSize, height: diceSize, alignment: .center)
+      //VStack
+      
     }
   }
 }
 
 struct sixDotDice: View {
   var body: some View {
+    ZStack {
     Rectangle()
-      .fill(Color.clear)
+      .fill(Color.yellow)
       .frame(width: diceSize, height: diceSize, alignment: .center)
-      //      .border(Color.black)
-      .background(
-        ZStack {
-          VStack {
-            Spacer()
-            threeDotDice(turn: false)
-              .offset(CGSize(width: 0, height: fieldSide * 1.3))
-            threeDotDice(turn: false)
-              .offset(CGSize(width: 0, height: -fieldSide * 1.3))
-            Spacer()
-          }
-      })
+    Text("6")
+      .font(Fonts.avenirNextCondensedBold(size: 64))
+//          VStack {
+//            Spacer()
+//            threeDotAux()
+////            threeDotAux()
+//            Spacer()
+//          }
+      }
   }
 }
 
