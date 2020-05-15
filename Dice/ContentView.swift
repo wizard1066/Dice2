@@ -452,6 +452,7 @@ struct ContentView: View {
             .onEnded { value in
               let direction = self.detectDirection(value: value)
               if direction == .left {
+                self.x2 = 0
                 self.y2 = 1
                 self.y1 = -1
                 self.f2 = UnitPoint.leading
@@ -468,6 +469,7 @@ struct ContentView: View {
                 }
               }
               if direction == .right {
+                self.x2 = 0
                 self.y2 = -1
                 self.y3 = 1
                 self.f2 = UnitPoint.trailing
@@ -492,7 +494,7 @@ struct ContentView: View {
                 self.x6 = -1
                 self.p6 = 90
                 self.q6.height = 128
-                
+                self.q2.width = 0
                 withAnimation(.linear(duration: 0.5)) {
                   self.p2 = 90
                   self.q2.height = -128
@@ -511,7 +513,7 @@ struct ContentView: View {
                 self.y5 = 0
                 self.p5 = 90
                 self.q5.height = -128
-                
+                self.q2.width = 0
                 withAnimation(.linear(duration: 0.5)) {
                   self.p2 = 90
                   self.q2.height = 128
@@ -531,6 +533,7 @@ struct ContentView: View {
             .onEnded { value in
               let direction = self.detectDirection(value: value)
               if direction == .left {
+                self.x3 = 0
                 self.y3 = 1
                 self.y2 = -1
                 self.f3 = UnitPoint.leading
@@ -546,6 +549,7 @@ struct ContentView: View {
                 }
               }
               if direction == .right {
+                self.x3 = 0
                 self.y3 = -1
                 self.y4 = 1
                 self.f3 = UnitPoint.trailing
@@ -570,7 +574,7 @@ struct ContentView: View {
                 self.x6 = -1
                 self.p6 = 90
                 self.q6.height = 128
-                
+                self.q3.width = 0
                 withAnimation(.linear(duration: 0.5)) {
                   self.p3 = 90
                   self.q3.height = -128
@@ -589,7 +593,7 @@ struct ContentView: View {
                 self.y5 = 0
                 self.p5 = 90
                 self.q5.height = -128
-                
+                self.q3.width = 0
                 withAnimation(.linear(duration: 0.5)) {
                   self.p3 = 90
                   self.q3.height = 128
@@ -609,6 +613,7 @@ struct ContentView: View {
             .onEnded { value in
               let direction = self.detectDirection(value: value)
               if direction == .left {
+                self.x4 = 0
                 self.y4 = 1
                 self.y3 = -1
                 self.f4 = UnitPoint.leading
@@ -624,6 +629,7 @@ struct ContentView: View {
                 }
               }
               if direction == .right {
+                self.x4 = 0
                 self.y4 = -1
                 self.y1 = 1
                 self.f4 = UnitPoint.trailing
@@ -648,7 +654,7 @@ struct ContentView: View {
                 self.x6 = -1
                 self.p6 = 90
                 self.q6.height = 128
-                
+                self.q4.width = 0
                 withAnimation(.linear(duration: 0.5)) {
                   self.p4 = 90
                   self.q4.height = -128
@@ -667,7 +673,7 @@ struct ContentView: View {
                 self.y5 = 0
                 self.p5 = 90
                 self.q5.height = -128
-                
+                self.q4.width = 0
                 withAnimation(.linear(duration: 0.5)) {
                   self.p4 = 90
                   self.q4.height = 128
