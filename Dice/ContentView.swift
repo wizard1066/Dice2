@@ -299,7 +299,15 @@ struct ContentView: View {
                   self.q1.height = 0
                   self.p1 = 0
                 }
-              }})
+              }
+              if direction == .left {
+                print("six left")
+              }
+              if direction == .right {
+                print("six right")
+              }
+          })
+              
           
         // five
         diceViews[DiceSides.five.rawValue]
@@ -347,8 +355,15 @@ struct ContentView: View {
                   self.p3 = 0
                 }
               }
+              if direction == .left {
+                print("five left")
+              }
+              if direction == .right {
+                print("five right")
+              }
             }
           )
+          
         
         diceViews[DiceSides.one.rawValue]
         // dice face 1
@@ -435,12 +450,14 @@ struct ContentView: View {
           .offset(q2)
           .gesture(DragGesture()
             .onEnded { value in
-              if value.translation.width > 30 {
+              let direction = self.detectDirection(value: value)
+              if direction == .left {
                 self.y2 = 1
                 self.y1 = -1
                 self.f2 = UnitPoint.leading
                 self.f1 = UnitPoint.trailing
                 self.q1.width = -128
+                self.x2 = 0
           
                 withAnimation(.linear(duration: 0.5)) {
                   self.p2 = 90
@@ -450,18 +467,58 @@ struct ContentView: View {
                   self.q1.width = 0
                 }
               }
-              if value.translation.width < 30 {
+              if direction == .right {
                 self.y2 = -1
                 self.y3 = 1
                 self.f2 = UnitPoint.trailing
                 self.f3 = UnitPoint.leading
                 self.q3.width = 128
+                self.x2 = 0
                 
                 withAnimation(.linear(duration: 0.5)) {
                   self.p2 = 90
                   self.q2.width = -128
                   self.p3 = 0
                   self.q3.width = 0
+                }
+              }
+                if direction == .up {
+                self.x2 = 1
+                self.f2 = UnitPoint.bottom
+                self.y2 = 0
+                
+                self.f6 = UnitPoint.top
+                self.y6 = 0
+                self.x6 = -1
+                self.p6 = 90
+                self.q6.height = 128
+                
+                withAnimation(.linear(duration: 0.5)) {
+                  self.p2 = 90
+                  self.q2.height = -128
+                   
+                  self.q6.height = 0
+                  self.p6 = 0
+                }
+              }
+              if direction == .down {
+                self.y2 = 0
+                self.x2 = -1
+                self.f2 = UnitPoint.top
+                
+                self.f5 = UnitPoint.bottom
+                self.x5 = 1
+                self.y5 = 0
+                self.p5 = 90
+                self.q5.height = -128
+                
+                withAnimation(.linear(duration: 0.5)) {
+                  self.p2 = 90
+                  self.q2.height = 128
+                  
+                  self.q5.height = 0
+                  self.p5 = 0
+                  
                 }
               }
             }
@@ -472,12 +529,14 @@ struct ContentView: View {
           .offset(q3)
           .gesture(DragGesture()
             .onEnded { value in
-              if value.translation.width > 30 {
+              let direction = self.detectDirection(value: value)
+              if direction == .left {
                 self.y3 = 1
                 self.y2 = -1
                 self.f3 = UnitPoint.leading
                 self.f2 = UnitPoint.trailing
                 self.q2.width = -128
+                self.x3 = 0
                 
                 withAnimation(.linear(duration: 0.5)) {
                   self.p3 = 90
@@ -486,18 +545,58 @@ struct ContentView: View {
                   self.q2.width = 0
                 }
               }
-              if value.translation.width < 30 {
+              if direction == .right {
                 self.y3 = -1
                 self.y4 = 1
                 self.f3 = UnitPoint.trailing
                 self.f4 = UnitPoint.leading
                 self.q4.width = 128
+                self.x3 = 0
                 
                 withAnimation(.linear(duration: 0.5)) {
                   self.p3 = 90
                   self.q3.width = -128
                   self.p4 = 0
                   self.q4.width = 0
+                }
+              }
+                if direction == .up {
+                self.x3 = 1
+                self.f3 = UnitPoint.bottom
+                self.y3 = 0
+                
+                self.f6 = UnitPoint.top
+                self.y6 = 0
+                self.x6 = -1
+                self.p6 = 90
+                self.q6.height = 128
+                
+                withAnimation(.linear(duration: 0.5)) {
+                  self.p3 = 90
+                  self.q3.height = -128
+                   
+                  self.q6.height = 0
+                  self.p6 = 0
+                }
+              }
+              if direction == .down {
+                self.y3 = 0
+                self.x3 = -1
+                self.f3 = UnitPoint.top
+                
+                self.f5 = UnitPoint.bottom
+                self.x5 = 1
+                self.y5 = 0
+                self.p5 = 90
+                self.q5.height = -128
+                
+                withAnimation(.linear(duration: 0.5)) {
+                  self.p3 = 90
+                  self.q3.height = 128
+                  
+                  self.q5.height = 0
+                  self.p5 = 0
+                  
                 }
               }
             }
@@ -508,13 +607,14 @@ struct ContentView: View {
           .offset(q4)
           .gesture(DragGesture()
             .onEnded { value in
-              if value.translation.width > 30 {
+              let direction = self.detectDirection(value: value)
+              if direction == .left {
                 self.y4 = 1
                 self.y3 = -1
                 self.f4 = UnitPoint.leading
                 self.f3 = UnitPoint.trailing
                 self.q3.width = -128
-                
+                self.x4 = 0
                 
                 withAnimation(.linear(duration: 0.5)) {
                   self.p4 = 90
@@ -523,19 +623,58 @@ struct ContentView: View {
                   self.q3.width = 0
                 }
               }
-              if value.translation.width < 30 {
+              if direction == .right {
                 self.y4 = -1
                 self.y1 = 1
                 self.f4 = UnitPoint.trailing
                 self.f1 = UnitPoint.leading
                 self.q1.width = 128
-                
+                self.x4 = 0
                 
                 withAnimation(.linear(duration: 0.5)) {
                   self.p4 = 90
                   self.q4.width = -128
                   self.p1 = 0
                   self.q1.width = 0
+                }
+              }
+                if direction == .up {
+                self.x4 = 1
+                self.f4 = UnitPoint.bottom
+                self.y4 = 0
+                
+                self.f6 = UnitPoint.top
+                self.y6 = 0
+                self.x6 = -1
+                self.p6 = 90
+                self.q6.height = 128
+                
+                withAnimation(.linear(duration: 0.5)) {
+                  self.p4 = 90
+                  self.q4.height = -128
+                   
+                  self.q6.height = 0
+                  self.p6 = 0
+                }
+              }
+              if direction == .down {
+                self.y4 = 0
+                self.x4 = -1
+                self.f4 = UnitPoint.top
+                
+                self.f5 = UnitPoint.bottom
+                self.x5 = 1
+                self.y5 = 0
+                self.p5 = 90
+                self.q5.height = -128
+                
+                withAnimation(.linear(duration: 0.5)) {
+                  self.p4 = 90
+                  self.q4.height = 128
+                  
+                  self.q5.height = 0
+                  self.p5 = 0
+                  
                 }
               }
             }
