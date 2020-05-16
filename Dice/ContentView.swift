@@ -29,15 +29,16 @@ struct Fonts {
 let dotSize:CGFloat = 24
 let diceSize:CGFloat = 128
 let fieldSide:CGFloat = 32
+let diceSpeed:Double = 0.2
 
 let d6 = GKRandomDistribution.d6()
 
 var diceViews:[AnyView] = [AnyView(oneDotDice()),AnyView(twoDotDice()),AnyView(threeDotDice()),AnyView(fourDotDice()),AnyView(fiveDotDice()),AnyView(sixDotDice())]
 
 struct ContentView: View {
-//  @State var showView = true
+  //  @State var showView = true
   enum SwipeHVDirection: String {
-        case left, right, up, down, none
+    case left, right, up, down, none
   }
   
   enum DiceFace: String {
@@ -96,25 +97,25 @@ struct ContentView: View {
   @State var f5:UnitPoint = .top
   @State var f6:UnitPoint = .top
   
-//  @State var swipeDirection: SwipeHVDirection = .none { didSet { print(swipeDirection) } }
+  //  @State var swipeDirection: SwipeHVDirection = .none { didSet { print(swipeDirection) } }
   
   
-
+  
   var body: some View {
-  
+    
     func detectDirection(value: DragGesture.Value) -> SwipeHVDirection {
-    if value.startLocation.x < value.location.x - 24 {
-                return .left
-              }
-              if value.startLocation.x > value.location.x + 24 {
-                return .right
-              }
-              if value.startLocation.y < value.location.y - 24 {
-                return .down
-              }
-              if value.startLocation.y > value.location.y + 24 {
-                return .up
-              }
+      if value.startLocation.x < value.location.x - 24 {
+        return .left
+      }
+      if value.startLocation.x > value.location.x + 24 {
+        return .right
+      }
+      if value.startLocation.y < value.location.y - 24 {
+        return .down
+      }
+      if value.startLocation.y > value.location.y + 24 {
+        return .up
+      }
       return .none
     }
     
@@ -192,19 +193,62 @@ struct ContentView: View {
                 self.f6 = UnitPoint.bottom
                 self.y6 = 0
                 
-                self.f3 = UnitPoint.top
-                self.y3 = 0
-                self.x3 = -1
-                self.p3 = 90
-                self.q3.height = 128
-                self.q3.width = 0
-
-                withAnimation(.linear(duration: 0.5)) {
+                switch self.source {
+                case .one:
+                  self.f3 = UnitPoint.top
+                  self.y3 = 0
+                  self.x3 = -1
+                  self.p3 = 90
+                  self.q3.height = 128
+                  self.q3.width = 0
+                case .two:
+                  self.f4 = UnitPoint.top
+                  self.y4 = 0
+                  self.x4 = -1
+                  self.p4 = 90
+                  self.q4.height = 128
+                  self.q4.width = 0
+                case .three:
+                  self.f1 = UnitPoint.top
+                  self.y1 = 0
+                  self.x1 = -1
+                  self.p1 = 90
+                  self.q1.height = 128
+                  self.q1.width = 0
+                case .four:
+                  self.f2 = UnitPoint.top
+                  self.y2 = 0
+                  self.x2 = -1
+                  self.p2 = 90
+                  self.q2.height = 128
+                  self.q2.width = 0
+                default:
+                  print("oops")
+                  break
+                }
+              
+                
+                withAnimation(.linear(duration: diceSpeed)) {
                   self.p6 = 90
                   self.q6.height = -128
-                   
-                  self.q3.height = 0
-                  self.p3 = 0
+                  
+                  switch self.source {
+                  case .one:
+                    self.q3.height = 0
+                    self.p3 = 0
+                  case .two:
+                    self.q4.height = 0
+                    self.p4 = 0
+                  case .three:
+                    self.q1.height = 0
+                    self.p1 = 0
+                  case .four:
+                    self.q2.height = 0
+                    self.p2 = 0
+                  default:
+                    print("oops")
+                    break
+                  }
                 }
               }
               if direction == .down {
@@ -213,54 +257,58 @@ struct ContentView: View {
                 self.f6 = UnitPoint.top
                 
                 switch self.source {
-                  case .one:
-                    self.f1 = UnitPoint.bottom
-                    self.x1 = 1
-                    self.y1 = 0
-                    self.p1 = 90
-                    self.q1.height = -128
-                  case .two:
-                    self.f2 = UnitPoint.bottom
-                    self.x2 = 1
-                    self.y2 = 0
-                    self.p2 = 90
-                    self.q2.height = -128
-                  case .three:
-                    self.f2 = UnitPoint.bottom
-                    self.x2 = 1
-                    self.y2 = 0
-                    self.p2 = 90
-                    self.q2.height = -128
-                  case .four:
-                    self.f2 = UnitPoint.bottom
-                    self.x2 = 1
-                    self.y2 = 0
-                    self.p2 = 90
-                    self.q2.height = -128
-                  default:
-                    break
-                    // do nothing
+                case .one:
+                  self.f1 = UnitPoint.bottom
+                  self.x1 = 1
+                  self.y1 = 0
+                  self.p1 = 90
+                  self.q1.height = -128
+                case .two:
+                  self.f2 = UnitPoint.bottom
+                  self.x2 = 1
+                  self.y2 = 0
+                  self.p2 = 90
+                  self.q2.height = -128
+                case .three:
+                  self.f3 = UnitPoint.bottom
+                  self.x3 = 1
+                  self.y3 = 0
+                  self.p3 = 90
+                  self.q3.height = -128
+                  self.q3.width = 0
+                case .four:
+                  self.f4 = UnitPoint.bottom
+                  self.x4 = 1
+                  self.y4 = 0
+                  self.p4 = 90
+                  self.q4.height = -128
+                  self.q4.width = 0
+                default:
+                  print("fooBar ",self.source)
+                  break
+                  // do nothing
                 }
                 
-                withAnimation(.linear(duration: 0.5)) {
+                withAnimation(.linear(duration: diceSpeed)) {
                   self.p6 = 90
                   self.q6.height = 128
                   
                   switch self.source {
-                    case .one:
-                      self.q1.height = 0
-                      self.p1 = 0
-                    case .two:
-                      self.q2.height = 0
-                      self.p2 = 0
-                    case .three:
-                      self.q3.height = 0
-                      self.p3 = 0
-                    case .four:
-                      self.q4.height = 0
-                      self.p4 = 0
-                    default:
-                      break
+                  case .one:
+                    self.q1.height = 0
+                    self.p1 = 0
+                  case .two:
+                    self.q2.height = 0
+                    self.p2 = 0
+                  case .three:
+                    self.q3.height = 0
+                    self.p3 = 0
+                  case .four:
+                    self.q4.height = 0
+                    self.p4 = 0
+                  default:
+                    print("fooBar ",self.source)
+                    break
                   }
                   
                 }
@@ -272,8 +320,8 @@ struct ContentView: View {
                 print("six right")
               }
           })
-              
-          
+        
+        
         // five
         diceViews[DiceSides.five.rawValue]
           .rotation3DEffect(.degrees(Double(p5)), axis: (x: self.x5, y:self.y5 , z: 0), anchor: self.f5, anchorZ: 0.0, perspective: CGFloat(0.5))
@@ -281,57 +329,59 @@ struct ContentView: View {
           .gesture(DragGesture()
             .onEnded { value in
               let direction = detectDirection(value: value)
+              print("direction ",direction,self.source)
               if direction == .up {
-                print("source ",self.source)
                 self.x5 = 1
                 self.f5 = UnitPoint.bottom
                 
                 switch self.source {
-                  case .one:
-                    self.f1 = UnitPoint.top
-                    self.y1 = 0
-                    self.p1 = 90
-                    self.q1.height = 128
-                  case .two:
-                    self.f2 = UnitPoint.top
-                    self.y2 = 0
-                    self.p2 = 90
-                    self.q2.height = 128
-                  case .three:
-                    self.f3 = UnitPoint.top
-                    self.y3 = 0
-                    self.p3 = 90
-                    self.q3.height = 128
-                  case .four:
-                    self.f4 = UnitPoint.top
-                    self.y4 = 0
-                    self.p4 = 90
-                    self.q4.height = 128
-                  default:
-                    break
-                    // do nothing
+                case .one:
+                  self.f1 = UnitPoint.top
+                  self.y1 = 0
+                  self.p1 = 90
+                  self.q1.height = 128
+                case .two:
+                  self.f2 = UnitPoint.top
+                  self.y2 = 0
+                  self.p2 = 90
+                  self.q2.height = 128
+                case .three:
+                  self.f3 = UnitPoint.top
+                  self.y3 = 0
+                  self.p3 = 90
+                  self.q3.height = 128
+                case .four:
+                  self.f4 = UnitPoint.top
+                  self.y4 = 0
+                  self.p4 = 90
+                  self.q4.height = 128
+                default:
+                  print("fooBar ",self.source)
+                  break
+                  // do nothing
                 }
                 
                 
-                withAnimation(.linear(duration: 0.5)) {
+                withAnimation(.linear(duration: diceSpeed)) {
                   self.p5 = 90
                   self.q5.height = -128
                   
-                  switch self.source {
-                    case .one:
-                      self.q1.height = 0
-                      self.p1 = 0
-                    case .two:
-                      self.q2.height = 0
-                      self.p2 = 0
-                    case .three:
-                      self.q3.height = 0
-                      self.p3 = 0
-                    case .four:
-                      self.q4.height = 0
-                      self.p4 = 0
-                    default:
-                      break
+                switch self.source {
+                  case .one:
+                    self.q1.height = 0
+                    self.p1 = 0
+                  case .two:
+                    self.q2.height = 0
+                    self.p2 = 0
+                  case .three:
+                    self.q3.height = 0
+                    self.p3 = 0
+                  case .four:
+                    self.q4.height = 0
+                    self.p4 = 0
+                  default:
+                    print("fooBar ",self.source)
+                    break
                   }
                 }
               }
@@ -340,19 +390,61 @@ struct ContentView: View {
                 self.x5 = -1
                 self.f5 = UnitPoint.top
                 
-                self.f3 = UnitPoint.bottom
-                self.x3 = 1
-                self.y3 = 0
-                self.p3 = 90
-                self.q3.height = -128
-                self.q3.width = 0
+                switch self.source {
+                case .one:
+                  self.f3 = UnitPoint.bottom
+                  self.x3 = 1
+                  self.y3 = 0
+                  self.p3 = 90
+                  self.q3.height = -128
+                  self.q3.width = 0
+                case .two:
+                  self.f4 = UnitPoint.bottom
+                  self.x4 = 1
+                  self.y4 = 0
+                  self.p4 = 90
+                  self.q4.height = -128
+                  self.q4.width = 0
+                case .three:
+                  self.f1 = UnitPoint.bottom
+                  self.x1 = 1
+                  self.y1 = 0
+                  self.p1 = 90
+                  self.q1.height = -128
+                  self.q1.width = 0
+                case .four:
+                  self.f2 = UnitPoint.bottom
+                  self.x2 = 1
+                  self.y2 = 0
+                  self.p2 = 90
+                  self.q2.height = -128
+                  self.q2.width = 0
+                default:
+                  print("fooBar ",self.source)
+                  break
+                }
                 
-                withAnimation(.linear(duration: 0.5)) {
+                withAnimation(.linear(duration: diceSpeed)) {
                   self.p5 = 90
                   self.q5.height = 128
                   
-                  self.q3.height = 0
-                  self.p3 = 0
+                  switch self.source {
+                  case .one:
+                    self.q3.height = 0
+                    self.p3 = 0
+                  case .two:
+                    self.q4.height = 0
+                    self.p4 = 0
+                  case .three:
+                    self.q1.height = 0
+                    self.p1 = 0
+                  case .four:
+                    self.q2.height = 0
+                    self.p2 = 0
+                  default:
+                    print("fooBar ",self.source)
+                    break
+                  }
                 }
               }
               if direction == .left {
@@ -362,11 +454,11 @@ struct ContentView: View {
                 print("five right")
               }
             }
-          )
-          
+        )
+        
         
         diceViews[DiceSides.one.rawValue]
-        // dice face 1
+          // dice face 1
           .rotation3DEffect(.degrees(Double(p1)), axis: (x: self.x1, y: self.y1, z: 0), anchor: self.f1, anchorZ: 0.0, perspective: CGFloat(0.5))
           .offset(q1)
           .gesture(DragGesture()
@@ -377,26 +469,28 @@ struct ContentView: View {
                 self.x1 = 1
                 self.f1 = UnitPoint.bottom
                 self.y1 = 0
-                              
+                
                 self.f6 = UnitPoint.top
                 self.y6 = 0
                 self.x6 = -1
                 self.p6 = 90
                 self.q6.height = 128
                 
-                withAnimation(.linear(duration: 0.5)) {
+                withAnimation(.linear(duration: diceSpeed)) {
                   self.p1 = 90
                   self.q1.height = -128
-                   
+                  
                   self.q6.height = 0
                   self.p6 = 0
                 }
               }
               if direction == .down {
+                print("1down")
                 self.source = .one
                 self.y1 = 0
                 self.x1 = -1
                 self.f1 = UnitPoint.top
+                self.q1.width = 0
                 
                 self.f5 = UnitPoint.bottom
                 self.x5 = 1
@@ -404,7 +498,7 @@ struct ContentView: View {
                 self.p5 = 90
                 self.q5.height = -128
                 
-                withAnimation(.linear(duration: 0.5)) {
+                withAnimation(.linear(duration: diceSpeed)) {
                   self.p1 = 90
                   self.q1.height = 128
                   
@@ -416,12 +510,14 @@ struct ContentView: View {
               if direction == .left {
                 self.x1 = 0
                 self.y1 = 1
-                self.y4 = -1
                 self.f1 = UnitPoint.leading
+                
                 self.f4 = UnitPoint.trailing
+                self.y4 = -1
+                self.x4 = 0
                 self.q4.width = -128
                 self.q4.height = 0
-                withAnimation(.linear(duration: 0.5)) {
+                withAnimation(.linear(duration: diceSpeed)) {
                   self.p1 = 90
                   self.q1.width = 128
                   self.p4 = 0
@@ -431,12 +527,14 @@ struct ContentView: View {
               if direction == .right  {
                 self.x1 = 0
                 self.y1 = -1
-                self.y2 = 1
                 self.f1 = UnitPoint.trailing
+                
+                self.y2 = 1
+                self.x2 = 0
                 self.f2 = UnitPoint.leading
                 self.q2.width = 128
                 self.q2.height = 0
-                withAnimation(.linear(duration: 0.5)) {
+                withAnimation(.linear(duration: diceSpeed)) {
                   self.p1 = 90
                   self.q1.width = -128
                   self.p2 = 0
@@ -456,13 +554,15 @@ struct ContentView: View {
               if direction == .left {
                 self.x2 = 0
                 self.y2 = 1
-                self.y1 = -1
                 self.f2 = UnitPoint.leading
+                
+                self.y1 = -1
+                self.x1 = 0
                 self.f1 = UnitPoint.trailing
                 self.q1.width = -128
-                self.x2 = 0
+                
                 self.q1.height = 0
-                withAnimation(.linear(duration: 0.5)) {
+                withAnimation(.linear(duration: diceSpeed)) {
                   self.p2 = 90
                   self.q2.width = 128
                   
@@ -473,20 +573,22 @@ struct ContentView: View {
               if direction == .right {
                 self.x2 = 0
                 self.y2 = -1
-                self.y3 = 1
+                
                 self.f2 = UnitPoint.trailing
+                
+                self.y3 = 1
+                self.x3 = 0
                 self.f3 = UnitPoint.leading
                 self.q3.width = 128
-                self.x2 = 0
                 self.q3.height = 0
-                withAnimation(.linear(duration: 0.5)) {
+                withAnimation(.linear(duration: diceSpeed)) {
                   self.p2 = 90
                   self.q2.width = -128
                   self.p3 = 0
                   self.q3.width = 0
                 }
               }
-                if direction == .up {
+              if direction == .up {
                 self.source = .two
                 self.x2 = 1
                 self.f2 = UnitPoint.bottom
@@ -495,13 +597,14 @@ struct ContentView: View {
                 self.f6 = UnitPoint.top
                 self.y6 = 0
                 self.x6 = -1
+                self.y6 = 0
                 self.p6 = 90
                 self.q6.height = 128
                 self.q2.width = 0
-                withAnimation(.linear(duration: 0.5)) {
+                withAnimation(.linear(duration: diceSpeed)) {
                   self.p2 = 90
                   self.q2.height = -128
-                   
+                  
                   self.q6.height = 0
                   self.p6 = 0
                 }
@@ -518,7 +621,7 @@ struct ContentView: View {
                 self.p5 = 90
                 self.q5.height = -128
                 self.q2.width = 0
-                withAnimation(.linear(duration: 0.5)) {
+                withAnimation(.linear(duration: diceSpeed)) {
                   self.p2 = 90
                   self.q2.height = 128
                   
@@ -539,13 +642,14 @@ struct ContentView: View {
               if direction == .left {
                 self.x3 = 0
                 self.y3 = 1
-                self.y2 = -1
                 self.f3 = UnitPoint.leading
+                
+                self.y2 = -1
                 self.f2 = UnitPoint.trailing
                 self.q2.width = -128
-                self.x3 = 0
+                
                 self.q2.height = 0
-                withAnimation(.linear(duration: 0.5)) {
+                withAnimation(.linear(duration: diceSpeed)) {
                   self.p3 = 90
                   self.q3.width = 128
                   self.p2 = 0
@@ -555,52 +659,58 @@ struct ContentView: View {
               if direction == .right {
                 self.x3 = 0
                 self.y3 = -1
-                self.y4 = 1
                 self.f3 = UnitPoint.trailing
+                
+                self.y4 = 1
+                self.x4 = 0
                 self.f4 = UnitPoint.leading
                 self.q4.width = 128
-                self.x3 = 0
                 self.q4.height = 0
-                withAnimation(.linear(duration: 0.5)) {
+                
+                withAnimation(.linear(duration: diceSpeed)) {
                   self.p3 = 90
                   self.q3.width = -128
                   self.p4 = 0
                   self.q4.width = 0
                 }
               }
-                if direction == .up {
+              if direction == .up {
+                print("3up")
                 self.source = .three
                 self.x3 = 1
                 self.f3 = UnitPoint.bottom
                 self.y3 = 0
+                self.q3.width = 0
                 
                 self.f6 = UnitPoint.top
                 self.y6 = 0
                 self.x6 = -1
                 self.p6 = 90
                 self.q6.height = 128
-                self.q3.width = 0
-                withAnimation(.linear(duration: 0.5)) {
+                
+                withAnimation(.linear(duration: diceSpeed)) {
                   self.p3 = 90
                   self.q3.height = -128
-                   
+                  
                   self.q6.height = 0
                   self.p6 = 0
                 }
               }
               if direction == .down {
+                print("3down")
                 self.source = .three
-                self.y3 = 0
                 self.x3 = -1
                 self.f3 = UnitPoint.top
+                self.y3 = 0
+                self.q3.width = 0
                 
                 self.f5 = UnitPoint.bottom
                 self.x5 = 1
                 self.y5 = 0
                 self.p5 = 90
                 self.q5.height = -128
-                self.q3.width = 0
-                withAnimation(.linear(duration: 0.5)) {
+                
+                withAnimation(.linear(duration: diceSpeed)) {
                   self.p3 = 90
                   self.q3.height = 128
                   
@@ -622,13 +732,13 @@ struct ContentView: View {
                 
                 self.x4 = 0
                 self.y4 = 1
-                self.y3 = -1
                 self.f4 = UnitPoint.leading
+                
+                self.y3 = -1
                 self.f3 = UnitPoint.trailing
                 self.q3.width = -128
-                self.x4 = 0
                 self.q3.height = 0
-                withAnimation(.linear(duration: 0.5)) {
+                withAnimation(.linear(duration: diceSpeed)) {
                   self.p4 = 90
                   self.q4.width = 128
                   self.p3 = 0
@@ -638,20 +748,21 @@ struct ContentView: View {
               if direction == .right {
                 self.x4 = 0
                 self.y4 = -1
-                self.y1 = 1
                 self.f4 = UnitPoint.trailing
+                
+                self.y1 = 1
+                self.x1 = 0
                 self.f1 = UnitPoint.leading
                 self.q1.width = 128
-                self.x4 = 0
                 self.q1.height = 0
-                withAnimation(.linear(duration: 0.5)) {
+                withAnimation(.linear(duration: diceSpeed)) {
                   self.p4 = 90
                   self.q4.width = -128
                   self.p1 = 0
                   self.q1.width = 0
                 }
               }
-                if direction == .up {
+              if direction == .up {
                 self.source = .four
                 self.x4 = 1
                 self.f4 = UnitPoint.bottom
@@ -663,10 +774,10 @@ struct ContentView: View {
                 self.p6 = 90
                 self.q6.height = 128
                 self.q4.width = 0
-                withAnimation(.linear(duration: 0.5)) {
+                withAnimation(.linear(duration: diceSpeed)) {
                   self.p4 = 90
                   self.q4.height = -128
-                   
+                  
                   self.q6.height = 0
                   self.p6 = 0
                 }
@@ -676,14 +787,15 @@ struct ContentView: View {
                 self.y4 = 0
                 self.x4 = -1
                 self.f4 = UnitPoint.top
+                self.q4.width = 0
                 
                 self.f5 = UnitPoint.bottom
                 self.x5 = 1
                 self.y5 = 0
                 self.p5 = 90
                 self.q5.height = -128
-                self.q4.width = 0
-                withAnimation(.linear(duration: 0.5)) {
+                
+                withAnimation(.linear(duration: diceSpeed)) {
                   self.p4 = 90
                   self.q4.height = 128
                   
@@ -861,21 +973,21 @@ struct threeDotDice: View {
       Circle()
         .fill(LinearGradient(gradient: Gradient(colors: [Color.init(0x8b0000), .red]), startPoint: .topTrailing, endPoint: .bottomLeading))
         .frame(width: 120, height: 120, alignment: .center)
-//      HStack {
-////        Spacer()
-////        Circle()
-////          .fill(Color.white)
-////          .frame(width: dotSize, height: dotSize, alignment: .center)
-////        Spacer()
-////        Circle()
-////          .fill(Color.white)
-////          .frame(width: dotSize, height: dotSize, alignment: .center)
-////        Spacer()
-////        Circle()
-////          .fill(Color.white)
-////          .frame(width: dotSize, height: dotSize, alignment: .center)
-////        Spacer()
-//      }.
+      //      HStack {
+      ////        Spacer()
+      ////        Circle()
+      ////          .fill(Color.white)
+      ////          .frame(width: dotSize, height: dotSize, alignment: .center)
+      ////        Spacer()
+      ////        Circle()
+      ////          .fill(Color.white)
+      ////          .frame(width: dotSize, height: dotSize, alignment: .center)
+      ////        Spacer()
+      ////        Circle()
+      ////          .fill(Color.white)
+      ////          .frame(width: dotSize, height: dotSize, alignment: .center)
+      ////        Spacer()
+      //      }.
       threeDotAux()
         .frame(width: diceSize, height: diceSize, alignment: .center)
         .rotationEffect(.degrees(45))
@@ -953,7 +1065,7 @@ struct fourDotDice: View {
 
 struct fiveDotDice: View {
   var body: some View {
-       ZStack {
+    ZStack {
       Rectangle()
         .fill(LinearGradient(gradient: Gradient(colors: [.red, Color.init(0x8b0000)]), startPoint: .topTrailing, endPoint: .bottomLeading))
         .frame(width: diceSize, height: diceSize, alignment: .center)
@@ -1006,18 +1118,41 @@ struct fiveDotDice: View {
 struct sixDotDice: View {
   var body: some View {
     ZStack {
-    Rectangle()
-      .fill(Color.yellow)
-      .frame(width: diceSize, height: diceSize, alignment: .center)
-    Text("6")
-      .font(Fonts.avenirNextCondensedBold(size: 64))
-//          VStack {
-//            Spacer()
-//            threeDotAux()
-////            threeDotAux()
-//            Spacer()
-//          }
-      }
+      Rectangle()
+        .fill(LinearGradient(gradient: Gradient(colors: [.red, Color.init(0x8b0000)]), startPoint: .topTrailing, endPoint: .bottomLeading))
+        .frame(width: diceSize, height: diceSize, alignment: .center)
+      Circle()
+        .fill(LinearGradient(gradient: Gradient(colors: [Color.init(0x8b0000), .red]), startPoint: .topTrailing, endPoint: .bottomLeading))
+        .frame(width: 120, height: 120, alignment: .center)
+        
+     HStack {
+      Circle()
+        .fill(Color.white)
+        .frame(width: dotSize, height: dotSize, alignment: .center)
+     
+      Circle()
+        .fill(Color.white)
+        .frame(width: dotSize, height: dotSize, alignment: .center)
+      
+      Circle()
+        .fill(Color.white)
+        .frame(width: dotSize, height: dotSize, alignment: .center)
+    }.offset(CGSize(width: 0, height: 24))
+    HStack {
+      Circle()
+        .fill(Color.white)
+        .frame(width: dotSize, height: dotSize, alignment: .center)
+     
+      Circle()
+        .fill(Color.white)
+        .frame(width: dotSize, height: dotSize, alignment: .center)
+      
+      Circle()
+        .fill(Color.white)
+        .frame(width: dotSize, height: dotSize, alignment: .center)
+    }.offset(CGSize(width: 0, height: -24))
+    
+    }
   }
 }
 
