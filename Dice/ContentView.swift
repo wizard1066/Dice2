@@ -155,7 +155,7 @@ ZStack {
 }
 
 struct DiceView: View {
-  //  @State var showView = true
+  
   enum SwipeHVDirection: String {
     case left, right, up, down, none
   }
@@ -175,13 +175,6 @@ struct DiceView: View {
   
   @State var source:DiceFace = .one
   
-  
-  @State var lowInt:Int = 0
-  @State var midInt:Int = 1
-  @State var highInt:Int = 2
-  @State var ultraInt:Int = 3
-  @State var topInt: Int = 4
-  @State var botInt: Int = 5
   @State var q1 = CGSize(width: 0, height: 0)
   @State var q2 = CGSize(width: 128, height: 0)
   @State var q3 = CGSize(width: 128, height: 0)
@@ -213,9 +206,6 @@ struct DiceView: View {
   @State var f5:UnitPoint = .top
   @State var f6:UnitPoint = .top
   
-  //  @State var swipeDirection: SwipeHVDirection = .none { didSet { print(swipeDirection) } }
-  
-  
   
   var body: some View {
     
@@ -236,20 +226,6 @@ struct DiceView: View {
     }
     
     return VStack {
-//      ZStack {
-//
-//        Circle()
-//          .stroke(Color.black)
-//          .frame(width: 64, height: 64, alignment: .center)
-//        Circle()
-//          .fill(Color.red)
-//          .frame(width: 64, height: 64, alignment: .center)
-//          .opacity(0.6)
-//          .offset(x: 2, y: 2)
-//      }.rotation3DEffect(.degrees(degree), axis: (x: 0, y: action, z: 0), anchor: swinger, anchorZ: 0, perspective: 0.2)
-     
-      
-      
       
       ZStack {
         diceViews[DiceSides.six.rawValue]
@@ -354,7 +330,7 @@ struct DiceView: View {
                   self.q4.height = -128
                   self.q4.width = 0
                 default:
-                  print("fooBar ",self.source)
+                  print("oops ",self.source)
                   break
                   // do nothing
                 }
@@ -377,7 +353,7 @@ struct DiceView: View {
                     self.q4.height = 0
                     self.p4 = 0
                   default:
-                    print("fooBar ",self.source)
+                    print("oops ",self.source)
                     break
                   }
                   
@@ -426,7 +402,7 @@ struct DiceView: View {
                   self.p4 = 90
                   self.q4.height = 128
                 default:
-                  print("fooBar ",self.source)
+                  print("oops ",self.source)
                   break
                   // do nothing
                 }
@@ -450,7 +426,7 @@ struct DiceView: View {
                     self.q4.height = 0
                     self.p4 = 0
                   default:
-                    print("fooBar ",self.source)
+                    print("oops ",self.source)
                     break
                   }
                 }
@@ -490,7 +466,7 @@ struct DiceView: View {
                   self.q2.height = -128
                   self.q2.width = 0
                 default:
-                  print("fooBar ",self.source)
+                  print("oops ",self.source)
                   break
                 }
                 
@@ -512,7 +488,7 @@ struct DiceView: View {
                     self.q2.height = 0
                     self.p2 = 0
                   default:
-                    print("fooBar ",self.source)
+                    print("oops ",self.source)
                     break
                   }
                 }
@@ -555,7 +531,6 @@ struct DiceView: View {
                 }
               }
               if direction == .down {
-                print("1down")
                 self.source = .one
                 self.y1 = 0
                 self.x1 = -1
@@ -745,7 +720,6 @@ struct DiceView: View {
                 }
               }
               if direction == .up {
-                print("3up")
                 self.source = .three
                 self.x3 = 1
                 self.f3 = UnitPoint.bottom
@@ -767,7 +741,6 @@ struct DiceView: View {
                 }
               }
               if direction == .down {
-                print("3down")
                 self.source = .three
                 self.x3 = -1
                 self.f3 = UnitPoint.top
@@ -1014,7 +987,6 @@ struct twoDotDice: View {
       Rectangle()
         .fill(LinearGradient(gradient: Gradient(colors: [.red, Color.init(0x8b0000)]), startPoint: .topTrailing, endPoint: .bottomLeading))
         .frame(width: diceSize, height: diceSize, alignment: .center)
-      //      .border(Color.black)
       Circle()
         .fill(LinearGradient(gradient: Gradient(colors: [Color.init(0x8b0000), .red]), startPoint: .topTrailing, endPoint: .bottomLeading))
         .frame(width: 120, height: 120, alignment: .center)
@@ -1039,7 +1011,6 @@ struct threeDotDice: View {
       Rectangle()
         .fill(LinearGradient(gradient: Gradient(colors: [.red, Color.init(0x8b0000)]), startPoint: .topTrailing, endPoint: .bottomLeading))
         .frame(width: diceSize, height: diceSize, alignment: .center)
-      //      .border(turn ? Color.black: Color.clear)
       Circle()
         .fill(LinearGradient(gradient: Gradient(colors: [Color.init(0x8b0000), .red]), startPoint: .topTrailing, endPoint: .bottomLeading))
         .frame(width: 120, height: 120, alignment: .center)
@@ -1063,26 +1034,6 @@ struct threeDotDice: View {
     }
   }
 }
-
-//struct threeDotAux: View {
-//  var body: some View {
-//    HStack {
-//      Spacer()
-//      Circle()
-//        .fill(Color.white)
-//        .frame(width: dotSize, height: dotSize, alignment: .center)
-//      Spacer()
-//      Circle()
-//        .fill(Color.white)
-//        .frame(width: dotSize, height: dotSize, alignment: .center)
-//      Spacer()
-//      Circle()
-//        .fill(Color.white)
-//        .frame(width: dotSize, height: dotSize, alignment: .center)
-//      Spacer()
-//    }
-//  }
-//}
 
 struct fourDotDice: View {
   var body: some View {
