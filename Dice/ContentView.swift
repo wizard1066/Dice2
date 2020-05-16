@@ -36,6 +36,125 @@ let d6 = GKRandomDistribution.d6()
 var diceViews:[AnyView] = [AnyView(oneDotDice()),AnyView(twoDotDice()),AnyView(threeDotDice()),AnyView(fourDotDice()),AnyView(fiveDotDice()),AnyView(sixDotDice())]
 
 struct ContentView: View {
+  var body: some View {
+    DiceView()
+  }
+}
+
+struct ContentViewU: View {
+@State var degree:Double = 0
+@State var mover = CGSize(width:0, height:0)
+@State var swinger:UnitPoint = .trailing
+@State var action:CGFloat = -1
+var body: some View {
+   ZStack {
+        Rectangle()
+          .stroke(Color.black)
+          .frame(width: 128, height: 128, alignment: .center)
+        Circle()
+          .stroke(Color.black)
+          .frame(width: 120, height: 120, alignment: .center)
+        
+        Circle()
+          .stroke(Color.black)
+          .frame(width: 28, height: 28, alignment: .center)
+      }.rotation3DEffect(.degrees(degree), axis: (x: 0, y: action, z: 0), anchor: swinger, anchorZ: 0, perspective: 0.5)
+        .onTapGesture {
+          self.swinger = UnitPoint.trailing
+          self.action = -1
+          self.degree = 0
+          self.mover.width = 0
+          withAnimation(.linear(duration: 1)) {
+            self.degree = 90
+            self.mover.width -= 128
+          }
+          DispatchQueue.main.asyncAfter(deadline: .now() + 1, execute: {
+            self.swinger = UnitPoint.leading
+            self.action = -1
+            self.mover.width = 0
+            withAnimation(.linear(duration: 1)) {
+              self.degree = 180
+              self.mover.width = 128
+            }
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1, execute: {
+              self.swinger = UnitPoint.trailing
+              self.action = -1
+              self.mover.width = -128
+              withAnimation(.linear(duration: 1)) {
+                self.degree = 270
+                self.mover.width = 0
+              }
+              DispatchQueue.main.asyncAfter(deadline: .now() + 1, execute: {
+                self.swinger = UnitPoint.leading
+                self.action = 1
+                self.mover.width = 128
+                self.degree = 90
+                withAnimation(.linear(duration: 1)) {
+                  self.degree = 0
+                  self.mover.width = 0
+                }
+              })
+            })
+          })
+      }
+      .offset(mover)
+}
+}
+
+struct ContentView2: View {
+@State var degree1:Double = 0
+@State var degree2:Double = 90
+@State var yAxis:CGFloat = 0
+@State var xAxis1:CGFloat = 0
+@State var xAxis2:CGFloat = 0
+@State var zAxis:CGFloat = 0
+@State var anchorValue1 = UnitPoint.leading
+@State var anchorValue2 = UnitPoint.trailing
+@State var slide:CGFloat = 0
+var body: some View {
+VStack {
+HStack {
+ZStack {
+        Image("steveJ")
+          .resizable()
+          .frame(width: 141, height: 199, alignment: .center)
+        
+        .onTapGesture {
+          withAnimation(.linear(duration: 2)) {
+            self.degree2 = 90
+            self.degree1 = 0
+            self.slide = -141
+          }
+        }
+
+      }.rotation3DEffect(.degrees(degree2), axis: (x: 0, y: 1, z: zAxis), anchor: anchorValue2, anchorZ: 0, perspective: 0.3)
+      .offset(x: slide, y: 0)
+ZStack {
+        Image("steveJ")
+          .resizable()
+          .frame(width: 141, height: 199, alignment: .center)
+        
+        .onTapGesture {
+          withAnimation(.linear(duration: 2)) {
+            self.degree1 = 90
+            self.degree2 = 0
+            self.slide = 0
+          }
+        }
+
+        
+
+      }.rotation3DEffect(.degrees(degree1), axis: (x: 0, y: 1, z: zAxis), anchor: anchorValue1, anchorZ: 0, perspective: 0.3)
+      .offset(x: slide, y: 0)
+      
+      
+      
+  }
+  }
+  }
+}
+
+struct DiceView: View {
   //  @State var showView = true
   enum SwipeHVDirection: String {
     case left, right, up, down, none
@@ -55,10 +174,7 @@ struct ContentView: View {
   }
   
   @State var source:DiceFace = .one
-  @State var degree:Double = 0
-  @State var mover = CGSize(width:0, height:0)
-  @State var swinger:UnitPoint = .trailing
-  @State var action:CGFloat = -1
+  
   
   @State var lowInt:Int = 0
   @State var midInt:Int = 1
@@ -120,64 +236,18 @@ struct ContentView: View {
     }
     
     return VStack {
-      ZStack {
-        Rectangle()
-          //          .fill(LinearGradient(gradient: Gradient(colors: [.red, Color.init(0x8b0000)]), startPoint: .leading, endPoint: .trailing))
-          .stroke(Color.black)
-          .frame(width: 128, height: 128, alignment: .center)
-        
-        //          Image(systemName: "arrow.left.circle")
-        //            .resizable()
-        //            .frame(width: 96, height: 96, alignment: .center)
-        //            .foregroundColor(Color.white)
-        Circle()
-          //          .fill(LinearGradient(gradient: Gradient(colors: [Color.init(0x8b0000), .red]), startPoint: .topTrailing, endPoint: .bottomLeading))
-          .stroke(Color.black)
-          .frame(width: 120, height: 120, alignment: .center)
-        
-        Circle()
-          .stroke(Color.black)
-          .frame(width: 28, height: 28, alignment: .center)
-      }.rotation3DEffect(.degrees(degree), axis: (x: 0, y: action, z: 0), anchor: swinger, anchorZ: 0, perspective: 0.2)
-        .onTapGesture {
-          self.swinger = UnitPoint.trailing
-          self.action = -1
-          self.degree = 0
-          self.mover.width = 0
-          withAnimation(.linear(duration: 1)) {
-            self.degree = 90
-            self.mover.width -= 128
-          }
-          DispatchQueue.main.asyncAfter(deadline: .now() + 1, execute: {
-            self.swinger = UnitPoint.leading
-            self.action = -1
-            self.mover.width = 0
-            withAnimation(.linear(duration: 1)) {
-              self.degree = 180
-              self.mover.width = 128
-            }
-            DispatchQueue.main.asyncAfter(deadline: .now() + 1, execute: {
-              self.swinger = UnitPoint.trailing
-              self.action = -1
-              self.mover.width = -128
-              withAnimation(.linear(duration: 1)) {
-                self.degree = 270
-                self.mover.width = 0
-              }
-              DispatchQueue.main.asyncAfter(deadline: .now() + 1, execute: {
-                self.swinger = UnitPoint.leading
-                self.action = 1
-                self.mover.width = 128
-                self.degree = 90
-                withAnimation(.linear(duration: 1)) {
-                  self.degree = 0
-                  self.mover.width = 0
-                }
-              })
-            })
-          })
-      }
-      .offset(mover)
+//      ZStack {
+//
+//        Circle()
+//          .stroke(Color.black)
+//          .frame(width: 64, height: 64, alignment: .center)
+//        Circle()
+//          .fill(Color.red)
+//          .frame(width: 64, height: 64, alignment: .center)
+//          .opacity(0.6)
+//          .offset(x: 2, y: 2)
+//      }.rotation3DEffect(.degrees(degree), axis: (x: 0, y: action, z: 0), anchor: swinger, anchorZ: 0, perspective: 0.2)
+     
       
       
       
@@ -973,47 +1043,46 @@ struct threeDotDice: View {
       Circle()
         .fill(LinearGradient(gradient: Gradient(colors: [Color.init(0x8b0000), .red]), startPoint: .topTrailing, endPoint: .bottomLeading))
         .frame(width: 120, height: 120, alignment: .center)
-      //      HStack {
-      ////        Spacer()
-      ////        Circle()
-      ////          .fill(Color.white)
-      ////          .frame(width: dotSize, height: dotSize, alignment: .center)
-      ////        Spacer()
-      ////        Circle()
-      ////          .fill(Color.white)
-      ////          .frame(width: dotSize, height: dotSize, alignment: .center)
-      ////        Spacer()
-      ////        Circle()
-      ////          .fill(Color.white)
-      ////          .frame(width: dotSize, height: dotSize, alignment: .center)
-      ////        Spacer()
-      //      }.
-      threeDotAux()
+            HStack {
+              Spacer()
+              Circle()
+                .fill(Color.white)
+                .frame(width: dotSize, height: dotSize, alignment: .center)
+              Spacer()
+              Circle()
+                .fill(Color.white)
+                .frame(width: dotSize, height: dotSize, alignment: .center)
+              Spacer()
+              Circle()
+                .fill(Color.white)
+                .frame(width: dotSize, height: dotSize, alignment: .center)
+              Spacer()
+            }
         .frame(width: diceSize, height: diceSize, alignment: .center)
         .rotationEffect(.degrees(45))
     }
   }
 }
 
-struct threeDotAux: View {
-  var body: some View {
-    HStack {
-      Spacer()
-      Circle()
-        .fill(Color.white)
-        .frame(width: dotSize, height: dotSize, alignment: .center)
-      Spacer()
-      Circle()
-        .fill(Color.white)
-        .frame(width: dotSize, height: dotSize, alignment: .center)
-      Spacer()
-      Circle()
-        .fill(Color.white)
-        .frame(width: dotSize, height: dotSize, alignment: .center)
-      Spacer()
-    }
-  }
-}
+//struct threeDotAux: View {
+//  var body: some View {
+//    HStack {
+//      Spacer()
+//      Circle()
+//        .fill(Color.white)
+//        .frame(width: dotSize, height: dotSize, alignment: .center)
+//      Spacer()
+//      Circle()
+//        .fill(Color.white)
+//        .frame(width: dotSize, height: dotSize, alignment: .center)
+//      Spacer()
+//      Circle()
+//        .fill(Color.white)
+//        .frame(width: dotSize, height: dotSize, alignment: .center)
+//      Spacer()
+//    }
+//  }
+//}
 
 struct fourDotDice: View {
   var body: some View {
