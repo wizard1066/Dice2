@@ -37,9 +37,120 @@ var diceViews:[AnyView] = [AnyView(oneDotDice()),AnyView(twoDotDice()),AnyView(t
 
 struct ContentView: View {
   var body: some View {
-    DiceView()
+//    DiceView()
+      TextView()
   }
 }
+
+struct TextView: View {
+  
+  @State var greenTurn: CGFloat = -1
+  @State var blueTurn:CGFloat = 1
+  
+  @State var redTurn: CGFloat = 1
+  @State var orangeTurn: CGFloat = 1
+  
+  @State var greenOffset: CGFloat = 0
+  @State var blueOffset: CGFloat = 90
+  
+//  @State var greenOffset: CGFloat = -90
+//  @State var blueOffset: CGFloat = 0
+  
+  @State var redOffset: CGFloat = 90
+  @State var orangeOffset: CGFloat = -90
+
+  @State var perspect:CGFloat = 0.5
+  
+  @State var greenAnchor: UnitPoint = .trailing
+  @State var blueAnchor: UnitPoint = .leading
+  @State var redAnchor: UnitPoint = .leading
+  @State var orangeAnchor: UnitPoint = .trailing
+  
+  @State var anchorZView:CGFloat = 0
+  
+  @State var greenDegree:Double = 0
+  @State var blueDegree:Double = 90
+  @State var redDegree:Double = 180
+  @State var orangeDegree: Double = 90
+  
+  var body: some View {
+  ZStack {
+    Spacer()
+//    Rectangle()
+//      .stroke(Color.green, lineWidth: 5)
+//      .frame(width: 128, height: 128, alignment: .center)
+//      .rotation3DEffect(.degrees(45), axis: (x: 1, y: 0, z: 0))
+//      .padding()
+//    Spacer()
+
+      Rectangle()
+        .stroke(Color.blue, lineWidth: 5)
+        .frame(width: 90, height: 90, alignment: .center)
+        .rotation3DEffect(.degrees(self.blueDegree), axis: (x: 0, y: self.blueTurn, z: 0), anchor: blueAnchor, anchorZ: 0, perspective: 0.5)
+        .offset(CGSize(width: blueOffset, height: 0))
+
+      Rectangle()
+        .stroke(Color.green, lineWidth: 5)
+        .frame(width: 90, height: 90, alignment: .center)
+        .rotation3DEffect(.degrees(self.greenDegree), axis: (x: 0, y: self.greenTurn, z: 0), anchor: greenAnchor, anchorZ: 0, perspective: 0.5)
+        .offset(CGSize(width: greenOffset, height: 0))
+
+      .onTapGesture {
+        withAnimation(.linear(duration: 8)) {
+            self.blueDegree = 0 // start 90
+            self.greenDegree = 90 // start 0
+            
+            self.orangeDegree = 180 // start 90 +
+            self.redDegree = 270 // start 180 +
+
+            self.blueOffset = 0 // start 90
+            self.greenOffset = -90 // start 0
+            
+            DispatchQueue.main.asyncAfter(deadline: .now() + 10.0, execute: {
+              withAnimation(.linear(duration: 8))  {
+                self.blueDegree = 90 // start 90
+                self.greenDegree = 0 // start 0
+                
+                self.orangeDegree = 90 // start 90
+                self.redDegree = 180 // start 180
+
+                self.blueOffset = 90 // start 90
+                self.greenOffset = 0 // start 0
+              }
+            })
+        }
+      }
+      ZStack {
+      
+      Rectangle()
+        .stroke(Color.orange, lineWidth: 5)
+        .frame(width: 90, height: 90, alignment: .center)
+      }
+      .rotation3DEffect(.degrees(self.orangeDegree), axis: (x: 0, y: self.orangeTurn, z: 0), anchor: orangeAnchor, anchorZ: 0, perspective: -0.5)
+      .offset(CGSize(width: orangeOffset, height: 0))
+      .zIndex(-1)
+      ZStack {
+      
+      Rectangle()
+        .stroke(Color.red, lineWidth: 5)
+        .frame(width: 90, height: 90, alignment: .center)
+      }
+      .rotation3DEffect(.degrees(self.redDegree), axis: (x: 0, y: self.redTurn, z: 0), anchor: redAnchor, anchorZ: 0, perspective: -0.5)
+      .offset(CGSize(width: redOffset, height: 0))
+      .zIndex(-1)
+
+    Spacer()
+    }
+  }
+}
+
+//          self.perspect = self.perspect > 0 ? -1 : 1
+//          self.degree = self.degree > 0 ? -70 : 70
+          
+//          self.anchorZView = 90
+//          self.perspect = 100
+//          self.anchorZView = self.anchorZView > -99 ? 100 : -100
+//          self.anchorZView = self.anchorZView > 99 ? -100 : 120
 
 struct ContentViewU: View {
 @State var degree:Double = 0
@@ -54,6 +165,8 @@ var body: some View {
         Circle()
           .stroke(Color.black)
           .frame(width: 120, height: 120, alignment: .center)
+//          .rotation3DEffect(<#T##angle: Angle##Angle#>, axis: <#T##(x: CGFloat, y: CGFloat, z: CGFloat)#>)
+//          .rotation3DEffect(<#T##angle: Angle##Angle#>, axis: <#T##(x: CGFloat, y: CGFloat, z: CGFloat)#>, anchor: <#T##UnitPoint#>, anchorZ: <#T##CGFloat#>, perspective: <#T##CGFloat#>)
         
         Circle()
           .stroke(Color.black)
@@ -377,7 +490,7 @@ struct DiceView: View {
                       
 
   
-    func detectDirection(value: DragGesture.Value) -> SwipeHVDirection {
+    func detectDirection(value: DragGesture.Value) -> SwipeHVDirection? {
       if value.startLocation.x < value.location.x - 24 {
         direction = .left
       }
@@ -400,7 +513,7 @@ struct DiceView: View {
           .offset(q6)
           .gesture(DragGesture()
             .onEnded { value in
-              let direction = detectDirection(value: value)
+              guard let direction = detectDirection(value: value) else { return }
               switch direction {
               case .up:
                 self.longitude = self.nextVLongitude(state: self.longitude)!
@@ -426,10 +539,23 @@ struct DiceView: View {
                   setSide6(axisX: 0, axisY: -1, anchorPoint: UnitPoint.trailing, starting: 0, width: 0, height: 0)
                   setSide3(axisX: 0, axisY: 1, anchorPoint: UnitPoint.leading, starting: 90, width: 128, height: 0)
                 case "A1B2":
-                    setSide6(axisX: -1, axisY: 0, anchorPoint: UnitPoint.top, starting: 0, width: 0, height: 0)
-                    setSide2(axisX: 1, axisY: 0, anchorPoint: UnitPoint.bottom, starting: 90, width: 0, height: -128)
-                  
+                  setSide6(axisX: -1, axisY: 0, anchorPoint: UnitPoint.top, starting: 0, width: 0, height: 0)
+                  setSide2(axisX: 1, axisY: 0, anchorPoint: UnitPoint.bottom, starting: 90, width: 0, height: -128)
+                case "D4C6":
+                  setSide6(axisX: 0, axisY: -1, anchorPoint: UnitPoint.trailing, starting: 0, width: 0, height: 0)
+                  setSide4(axisX: 0, axisY: 1, anchorPoint: UnitPoint.leading, starting: 90, width: 128, height: 0)
+                  print("left 3")
+                case "B3C6":
+                  setSide6(axisX: 0, axisY: 1, anchorPoint: UnitPoint.leading, starting: 0, width: 0, height: 0)
+                  setSide3(axisX: 0, axisY: -1, anchorPoint: UnitPoint.trailing, starting: 90, width: -128, height: 0)
+                  print("right 4")
+                case "C6D5":
+                  setSide6(axisX: -1, axisY: 0, anchorPoint: UnitPoint.top, starting: 0, width: 0, height: 0)
+                  setSide5(axisX: 1, axisY: 0, anchorPoint: UnitPoint.bottom, starting: 90, width: 0, height: -128)
+                print("C6D5 down 5")
                 
+               
+                  
                 
                   
                 default:
@@ -442,7 +568,7 @@ struct DiceView: View {
                     self.q6.height = -128
                     self.q5.height = 0
                     self.p5 = 0
-                  case "D4A1":
+                  case "D4A1": // left
                     self.p6 = 90
                     self.q6.width = 128
                     self.q4.width = 0
@@ -457,6 +583,21 @@ struct DiceView: View {
                     self.q6.height = 128
                     self.q2.height = 0
                     self.p2 = 0
+                  case "B3C6": // righr
+                    self.p6 = 90
+                    self.q6.width = 128
+                    self.q3.width = 0
+                    self.p3 = 0
+                  case "D4C6": // left
+                    self.p6 = 90
+                    self.q6.width = -128
+                    self.q4.width = 0
+                    self.p4 = 0
+                  case "C6D5": // up
+                    self.p6 = 90
+                    self.q6.height = 128
+                    self.q5.height = 0
+                    self.p5 = 0
                   default:
                     print("oops")
                   }
@@ -468,7 +609,7 @@ struct DiceView: View {
           .offset(q5)
           .gesture(DragGesture()
             .onEnded { value in
-              let direction = detectDirection(value: value)
+              guard let direction = detectDirection(value: value) else { return }
               switch direction {
               case .up:
                 self.longitude = self.nextVLongitude(state: self.longitude)!
@@ -490,7 +631,11 @@ struct DiceView: View {
                 case "A1C6":
                   setSide5(axisX: -1, axisY: 0, anchorPoint: UnitPoint.top, starting: 0, width: 0, height: 0)
                   setSide6(axisX: 1, axisY: 0, anchorPoint: UnitPoint.bottom, starting: 90, width: 0, height: -128)
-                  
+                case "C6C6":
+                  setSide5(axisX: -1, axisY: 0, anchorPoint: UnitPoint.top, starting: 0, width: 0, height: 0)
+                  setSide1(axisX: 1, axisY: 0, anchorPoint: UnitPoint.bottom, starting: 90, width: 0, height: -128)
+                print("C6D5 down 1")
+                
                   
                     
                 default:
@@ -508,6 +653,11 @@ struct DiceView: View {
                     self.q5.height = 128
                     self.q6.height = 0
                     self.p6 = 0
+                  case "C6C6": // up
+                    self.p5 = 90
+                    self.q5.height = 128
+                    self.q1.height = 0
+                    self.p1 = 0
                   default:
                     print("oops")
                   }
@@ -518,7 +668,7 @@ struct DiceView: View {
           .offset(q4)
           .gesture(DragGesture()
             .onEnded { value in
-              let direction = detectDirection(value: value)
+              guard let direction = detectDirection(value: value) else { return }
               switch direction {
               case .up:
                 self.longitude = self.nextVLongitude(state: self.longitude)!
@@ -542,7 +692,15 @@ struct DiceView: View {
                 case "C6A1":
                   setSide4(axisX: 0, axisY: -1, anchorPoint: UnitPoint.trailing, starting: 0, width: 0, height: 0)
                   setSide6(axisX: 0, axisY: 1, anchorPoint: UnitPoint.leading, starting: 90, width: 128, height: 0)
+                case "C6C6":
+                  setSide4(axisX: 0, axisY: -1, anchorPoint: UnitPoint.trailing, starting: 0, width: 0, height: 0)
+                  setSide1(axisX: 0, axisY: 1, anchorPoint: UnitPoint.leading, starting: 90, width: 128, height: 0)
+                  print("move to 1")
+                  case "A1C6":
+                  setSide4(axisX: 0, axisY: 1, anchorPoint: UnitPoint.leading, starting: 0, width: 0, height: 0)
+                  setSide6(axisX: 0, axisY: -1, anchorPoint: UnitPoint.trailing, starting: 90, width: -128, height: 0)
                 
+                  
                 default:
                   break
                 }
@@ -558,6 +716,16 @@ struct DiceView: View {
                     self.q4.width = -128
                     self.q6.width = 0
                     self.p6 = 0
+                  case "C6C6":
+                    self.p4 = 90
+                    self.q4.width = -128
+                    self.q1.width = 0
+                    self.p1 = 0
+                  case "A1C6": // right
+                  self.p4 = 90
+                  self.q4.width = 128
+                  self.q6.width = 0
+                  self.p6 = 0
                   default:
                     print("oops")
                   }
@@ -569,7 +737,7 @@ struct DiceView: View {
           .offset(q3)
           .gesture(DragGesture()
             .onEnded { value in
-               let direction = detectDirection(value: value)
+              guard let direction = detectDirection(value: value) else { return }
               switch direction {
               case .up:
                 self.longitude = self.nextVLongitude(state: self.longitude)!
@@ -586,14 +754,18 @@ struct DiceView: View {
               print("select ",select)
               switch select {
                 case "C6A1":
-                  setSide3(axisX: 0, axisY: 1, anchorPoint: UnitPoint.leading, starting: 0, width: 0, height: 0)
-                  setSide6(axisX: 0, axisY: -1, anchorPoint: UnitPoint.trailing, starting: 90, width: -128, height: 0)
-                  
+                    setSide3(axisX: 0, axisY: 1, anchorPoint: UnitPoint.leading, starting: 0, width: 0, height: 0)
+                    setSide6(axisX: 0, axisY: -1, anchorPoint: UnitPoint.trailing, starting: 90, width: -128, height: 0)
                   case "A1A1":
-                setSide3(axisX: 0, axisY: -1, anchorPoint: UnitPoint.trailing, starting: 0, width: 0, height: 0)
-                setSide1(axisX: 0, axisY: 1, anchorPoint: UnitPoint.leading, starting: 90, width: 128, height: 0)
-                  
-                    
+                    setSide3(axisX: 0, axisY: -1, anchorPoint: UnitPoint.trailing, starting: 0, width: 0, height: 0)
+                    setSide1(axisX: 0, axisY: 1, anchorPoint: UnitPoint.leading, starting: 90, width: 128, height: 0)
+                  case "A1C6":
+                    setSide3(axisX: 0, axisY: -1, anchorPoint: UnitPoint.trailing, starting: 0, width: 0, height: 0)
+                    setSide6(axisX: 0, axisY: 1, anchorPoint: UnitPoint.leading, starting: 90, width: 128, height: 0)
+                  case "C6C6":
+                  setSide3(axisX: 0, axisY: 1, anchorPoint: UnitPoint.leading, starting: 0, width: 0, height: 0)
+                  setSide1(axisX: 0, axisY: -1, anchorPoint: UnitPoint.trailing, starting: 90, width: -128, height: 0)
+                
                 default:
                   break
                 }
@@ -609,6 +781,16 @@ struct DiceView: View {
                     self.q3.width = -128
                     self.q1.width = 0
                     self.p1 = 0
+                  case "A1C6":
+                    self.p3 = 90
+                    self.q3.width = -128
+                    self.q6.width = 0
+                    self.p6 = 0
+                  case "C6C6":
+                    self.p3 = 90
+                    self.q3.width = 128
+                    self.q1.width = 0
+                    self.p1 = 0
                   default:
                     print("oops")
                   }
@@ -619,7 +801,7 @@ struct DiceView: View {
           .offset(q2)
           .gesture(DragGesture()
             .onEnded { value in
-              let direction = detectDirection(value: value)
+              guard let direction = detectDirection(value: value) else { return }
               switch direction {
               case .up:
                 self.longitude = self.nextVLongitude(state: self.longitude)!
@@ -641,6 +823,14 @@ struct DiceView: View {
                 case "A1A1":
                   setSide2(axisX: -1, axisY: 0, anchorPoint: UnitPoint.top, starting: 0, width: 0, height: 0)
                   setSide1(axisX: 1, axisY: 0, anchorPoint: UnitPoint.bottom, starting: 90, width: 0, height: -128)
+                case "C6A1":
+                setSide2(axisX: -1, axisY: 0, anchorPoint: UnitPoint.top, starting: 0, width: 0, height: 0)
+                setSide6(axisX: 1, axisY: 0, anchorPoint: UnitPoint.bottom, starting: 90, width: 0, height: -128)
+                print("C6A1 down 6")
+                
+                
+                
+                  
                 default:
                   break
                 }
@@ -656,6 +846,11 @@ struct DiceView: View {
                     self.q2.height = 128
                     self.q1.height = 0
                     self.p1 = 0
+                  case "C6A1": // up
+                    self.p2 = 90
+                    self.q2.height = 128
+                    self.q6.height = 0
+                    self.p6 = 0
                   default:
                     print("oops")
                   }
@@ -668,7 +863,7 @@ struct DiceView: View {
           .offset(q1)
           .gesture(DragGesture()
             .onEnded { value in
-              let direction = detectDirection(value: value)
+              guard let direction = detectDirection(value: value) else { return }
               switch direction {
               case .up:
                 self.longitude = self.nextVLongitude(state: self.longitude)!
@@ -698,6 +893,18 @@ struct DiceView: View {
               case "A1D5":
                 setSide1(axisX: -1, axisY: 0, anchorPoint: UnitPoint.top, starting: 0, width: 0, height: 0)
                 setSide5(axisX: 1, axisY: 0, anchorPoint: UnitPoint.bottom, starting: 90, width: 0, height: -128)
+              case "C6B2":
+                setSide1(axisX: -1, axisY: 0, anchorPoint: UnitPoint.top, starting: 0, width: 0, height: 0)
+                setSide2(axisX: 1, axisY: 0, anchorPoint: UnitPoint.bottom, starting: 90, width: 0, height: -128)
+                print("C6B1 down 2")
+              case "C6D5":
+                print("C6D5 up 5")
+              case "B3C6":
+                setSide1(axisX: 0, axisY: -1, anchorPoint: UnitPoint.trailing, starting: 0, width: 0, height: 0)
+                setSide3(axisX: 0, axisY: 1, anchorPoint: UnitPoint.leading, starting: 90, width: 128, height: 0)
+              case "D4C6":
+                setSide1(axisX: 0, axisY: 1, anchorPoint: UnitPoint.leading, starting: 0, width: 0, height: 0)
+                setSide4(axisX: 0, axisY: -1, anchorPoint: UnitPoint.trailing, starting: 90, width: -128, height: 0)
                 
                 
                 
@@ -726,6 +933,21 @@ struct DiceView: View {
                   self.q1.height = 128
                   self.q5.height = 0
                   self.p5 = 0
+                case "C6B2": // up
+                  self.p1 = 90
+                  self.q1.height = 128
+                  self.q2.height = 0
+                  self.p2 = 0
+                case "B3C6":
+                  self.p1 = 90
+                  self.q1.width = -128
+                  self.q3.width = 0
+                  self.p3 = 0
+                case "D4C6": // right
+                  self.p1 = 90
+                  self.q1.width = 128
+                  self.q4.width = 0
+                  self.p4 = 0
                 default:
                   print("oops")
                 }
@@ -793,7 +1015,7 @@ struct DiceViewV: View {
   
   var body: some View {
     
-    func detectDirection(value: DragGesture.Value) -> SwipeHVDirection {
+    func detectDirection(value: DragGesture.Value) -> SwipeHVDirection? {
       if value.startLocation.x < value.location.x - 24 {
         return .left
       }
@@ -817,7 +1039,7 @@ struct DiceViewV: View {
           .offset(q6)
           .gesture(DragGesture()
             .onEnded { value in
-              let direction = detectDirection(value: value)
+              guard let direction = detectDirection(value: value) else { return }
               if direction == .up {
                 self.x6 = 1
                 self.y6 = 0
@@ -913,7 +1135,7 @@ struct DiceViewV: View {
           .offset(q5)
           .gesture(DragGesture()
             .onEnded { value in
-              let direction = detectDirection(value: value)
+              guard let direction = detectDirection(value: value) else { return }
               print("direction ",direction,self.source)
               if direction == .up {
                 self.x5 = 1
@@ -1007,7 +1229,7 @@ struct DiceViewV: View {
           .offset(q1)
           .gesture(DragGesture()
             .onEnded { value in
-              let direction = detectDirection(value: value)
+              guard let direction = detectDirection(value: value) else { return }
               if direction == .up {
                 self.source = .one
                 self.x1 = 1
@@ -1098,7 +1320,7 @@ struct DiceViewV: View {
           .offset(q2)
           .gesture(DragGesture()
             .onEnded { value in
-              let direction = detectDirection(value: value)
+              guard let direction = detectDirection(value: value) else { return }
               if direction == .left {
                 self.x2 = 0
                 self.y2 = 1
@@ -1190,7 +1412,7 @@ struct DiceViewV: View {
           .offset(q3)
           .gesture(DragGesture()
             .onEnded { value in
-              let direction = detectDirection(value: value)
+              guard let direction = detectDirection(value: value) else { return }
               if direction == .left {
                 self.x3 = 0
                 self.y3 = 1
@@ -1281,7 +1503,7 @@ struct DiceViewV: View {
           .offset(q4)
           .gesture(DragGesture()
             .onEnded { value in
-              let direction = detectDirection(value: value)
+              guard let direction = detectDirection(value: value) else { return }
               if direction == .left {
                 
                 self.x4 = 0
